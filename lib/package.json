@@ -1,0 +1,35 @@
+{
+  "name": "@jacksonotto/pulse",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./types/index.d.ts",
+  "description": "A lightweight JavaScript framework based on signals",
+  "author": "Jackson Otto",
+  "version": "0.0.1",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./jsx-runtime": {
+      "import": "./dist/index.js",
+      "types": "./types/jsx.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/index.js",
+      "types": "./types/jsx.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "nodemon -e ts --watch src --exec 'tsc || exit 1'"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@jacksonotto/signals": "link:../../signals",
+    "csstype": "^3.1.3"
+  }
+}
