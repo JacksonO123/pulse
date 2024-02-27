@@ -1,5 +1,10 @@
+import { type Accessor, trackScope, createEffect } from "@jacksonotto/signals";
 import type { JSX } from "./jsx.js";
+import { jsxElementToElement, renderChild } from "./dom.js";
+
+export type JSXElement = JSX.Element;
 export { JSX };
+export { mount } from "./dom.js";
 
 const $$EVENTS = "_$DX_DELEGATE";
 
@@ -13,26 +18,17 @@ declare global {
   }
 }
 
-const renderChild = (target: HTMLElement | SVGElement, el: JSX.Element) => {
-  if (el instanceof Node) {
-    target.appendChild(el);
-  } else if (Array.isArray(el)) {
-    const text = new Text("[ " + el.join(", ") + " ]");
-    renderChild(target, text);
-  } else {
-    renderChild(target, el + "");
-  }
-};
-
-export const mount = (comp: JSX.Element, root = document.body) => {
-  renderChild(root, comp);
-};
-
-export const createComponent = <T extends JSX.DOMAttributes<JSX.Element>>(
+export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
   comp: JSX.Component<T>,
   props: T,
 ) => {
-  return comp(props);
+  let res: JSXElement;
+
+  trackScope(() => {
+    res = comp(props);
+  });
+
+  return res;
 };
 
 export const template = (str: string, _: any, isSvg: boolean) => {
@@ -48,7 +44,40 @@ export const template = (str: string, _: any, isSvg: boolean) => {
   return () => el;
 };
 
-export const insert = (..._args: any[]) => {
+export const insert = (
+  parent: Element,
+  accessor: Accessor<JSXElement> | Node,
+  // i have no idea what these mean
+  marker: any,
+  initial: any,
+) => {
+  // the equivelant of this function in solidjs is like 100 lines of the most dense js you have ever seen
+  // i have no idea what it does and this is so much shorter i don't get it hope this works :)
+
+  if (marker) {
+    console.log("HAS MARKER", marker);
+  }
+  if (initial) {
+    console.log("HAS INITIAL", initial);
+  }
+
+  if (typeof accessor === "function") {
+    let prevEl: Element | Text | null;
+
+    createEffect(() => {
+      const el = jsxElementToElement(accessor());
+
+      if (prevEl === null || prevEl === undefined) {
+        renderChild(parent, el);
+      } else {
+        prevEl.replaceWith(el);
+      }
+      prevEl = el;
+    });
+  } else {
+    renderChild(parent, accessor);
+  }
+
   document.body.appendChild(document.createElement("div"));
 };
 
@@ -80,13 +109,13 @@ const eventHandler = (e: Event) => {
       if (data !== undefined)
         (
           handler as JSX.BoundEventHandler<
-            JSX.Element,
-            JSX.TEvent<JSX.Element>
+            JSXElement,
+            JSX.TEvent<JSXElement>
           >[0]
-        )(data, e as JSX.TEvent<JSX.Element>);
+        )(data, e as JSX.TEvent<JSXElement>);
       else {
-        (handler as (e: JSX.TEvent<JSX.Element>) => void)(
-          e as JSX.TEvent<JSX.Element>,
+        (handler as (e: JSX.TEvent<JSXElement>) => void)(
+          e as JSX.TEvent<JSXElement>,
         );
       }
     }

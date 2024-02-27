@@ -28,8 +28,10 @@
     "nodemon": "^3.1.0",
     "typescript": "^5.3.3"
   },
+  "peerDependencies": {
+    "@jacksonotto/signals": "link:../../signals"
+  },
   "dependencies": {
-    "@jacksonotto/signals": "link:../../signals",
     "csstype": "^3.1.3"
   }
 }

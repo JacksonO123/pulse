@@ -1,33 +1,31 @@
-const sig = <T,>(val: T) => {
-  let obj = {
-    value: val
-  };
-
-  return (newVal?: T) => {
-    if (newVal) obj.value = newVal;
-    return obj.value;
-  };
-};
+import { createSignal } from '@jacksonotto/signals';
 
 export type CompProps = {
   property: string;
   children: string;
 };
 
-const Comp = (props: CompProps) => {
-  console.log(props);
-
-  const test = sig(4);
+const Comp = (_: CompProps) => {
+  const [test, setTest] = createSignal(0);
+  const [bool, setBool] = createSignal(false);
 
   const change = (e: MouseEvent) => {
     console.log('CLICKING', e.currentTarget);
-    test(test() + 1);
+    setTest((prev) => prev + 1);
+  };
+
+  const another = () => {
+    setBool((prev) => !prev);
   };
 
   return (
     <div>
       <span>here</span>
-      <button onClick={change}>test {test()}</button>
+      <button onClick={change}>
+        test {test()}
+        {bool()}
+      </button>
+      <button onClick={another}>click me</button>
     </div>
   );
 };

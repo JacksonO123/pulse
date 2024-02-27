@@ -4,7 +4,7 @@ import Component from './Comp';
 const App = () => {
   return (
     <div>
-      <Component property="what">sdlkfjsdl</Component>;
+      <Component property="what">sdlkfjsdl</Component>
     </div>
   );
 };
