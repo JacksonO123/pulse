@@ -1,12 +1,13 @@
-import { type Accessor, trackScope, createEffect } from "@jacksonotto/signals";
-import type { JSX } from "./jsx.js";
-import { jsxElementToElement, renderChild } from "./dom.js";
+import { type Accessor, trackScope, createEffect } from '@jacksonotto/signals';
+import type { JSX } from './jsx.js';
+import { jsxElementToElement, renderChild, eventHandler, replaceElements, insertBefore } from './dom.js';
 
 export type JSXElement = JSX.Element;
 export { JSX };
-export { mount } from "./dom.js";
+export { mount } from './dom.js';
+export { derived as memo } from '@jacksonotto/signals';
 
-const $$EVENTS = "_$DX_DELEGATE";
+const $$EVENTS = '_$DX_DELEGATE';
 
 declare global {
   interface Document {
@@ -20,7 +21,7 @@ declare global {
 
 export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
   comp: JSX.Component<T>,
-  props: T,
+  props: T
 ) => {
   let res: JSXElement;
 
@@ -33,7 +34,7 @@ export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
 
 export const template = (str: string, _: any, isSvg: boolean) => {
   const create = () => {
-    const el = document.createElement("template");
+    const el = document.createElement('template');
     el.innerHTML = str;
 
     return isSvg ? el.content.firstChild!.firstChild : el.content.firstChild;
@@ -41,85 +42,52 @@ export const template = (str: string, _: any, isSvg: boolean) => {
 
   const el = create();
 
-  return () => el;
+  return () => el?.cloneNode(true);
 };
 
 export const insert = (
   parent: Element,
   accessor: Accessor<JSXElement> | Node,
-  // i have no idea what these mean
-  marker: any,
-  initial: any,
+  marker: Node | null,
+  // i have no idea what this means
+  initial: any
 ) => {
   // the equivelant of this function in solidjs is like 100 lines of the most dense js you have ever seen
   // i have no idea what it does and this is so much shorter i don't get it hope this works :)
 
-  if (marker) {
-    console.log("HAS MARKER", marker);
-  }
   if (initial) {
-    console.log("HAS INITIAL", initial);
+    console.log('HAS INITIAL', { parent, accessor, marker, initial });
   }
 
-  if (typeof accessor === "function") {
-    let prevEl: Element | Text | null;
+  if (typeof accessor === 'function') {
+    let prevEl: Node | Node[] | null = null;
 
     createEffect(() => {
-      const el = jsxElementToElement(accessor());
-
-      if (prevEl === null || prevEl === undefined) {
-        renderChild(parent, el);
-      } else {
-        prevEl.replaceWith(el);
+      const value = accessor();
+      if (value === false) {
+        if (prevEl !== null) {
+          (prevEl as Element).remove();
+          prevEl = null;
+        }
+        return;
       }
+
+      const el = jsxElementToElement(value);
+
+      if (prevEl === null) {
+        if (marker !== null) {
+          insertBefore(marker as Element, el);
+        } else {
+          renderChild(parent, el);
+        }
+      } else {
+        replaceElements(prevEl, el, marker);
+      }
+
       prevEl = el;
     });
   } else {
     renderChild(parent, accessor);
-  }
-
-  document.body.appendChild(document.createElement("div"));
-};
-
-const eventHandler = (e: Event) => {
-  const key = `$$${e.type}`;
-  let node: Node | null = ((e.composedPath && e.composedPath()[0]) ||
-    e.target) as Node;
-
-  if (e.target !== node) {
-    Object.defineProperty(e, "target", {
-      configurable: true,
-      value: node,
-    });
-  }
-
-  Object.defineProperty(e, "currentTarget", {
-    configurable: true,
-    get() {
-      return node || document;
-    },
-  });
-
-  while (node) {
-    const handler = node[key as keyof EventTarget];
-
-    if (handler && !node.disabled) {
-      const data = node[`${key}Data` as keyof Node];
-
-      if (data !== undefined)
-        (
-          handler as JSX.BoundEventHandler<
-            JSXElement,
-            JSX.TEvent<JSXElement>
-          >[0]
-        )(data, e as JSX.TEvent<JSXElement>);
-      else {
-        (handler as (e: JSX.TEvent<JSXElement>) => void)(
-          e as JSX.TEvent<JSXElement>,
-        );
-      }
-    }
-    node = node.parentNode;
   }
 };
 

@@ -1,4 +1,4 @@
-import * as csstype from "csstype";
+import * as csstype from 'csstype';
 
 /**
  * Based on JSX types for Surplus, Inferno, and dom-expressions. Adapted for Pulse.
@@ -11,17 +11,8 @@ import * as csstype from "csstype";
 type DOMElement = Element;
 
 export namespace JSX {
-  type Element =
-    | Node
-    | ArrayElement
-    | (string & {})
-    | number
-    | boolean
-    | null
-    | undefined;
-  type Component<T extends JSX.DOMAttributes<JSX.Element>> = (
-    props: T,
-  ) => JSX.Element;
+  type Element = Node | ArrayElement | (string & {}) | number | boolean | null | undefined;
+  type Component<T extends JSX.DOMAttributes<JSX.Element>> = (props: T) => JSX.Element;
   type TEvent<T, E extends Event = Event> = E & {
     currentTarget: T;
     target: DOMElement;
@@ -41,7 +32,7 @@ export namespace JSX {
       e: E & {
         currentTarget: T;
         target: DOMElement;
-      },
+      }
     ): void;
   }
   interface BoundEventHandler<T, E extends Event> {
@@ -50,25 +41,18 @@ export namespace JSX {
       e: E & {
         currentTarget: T;
         target: DOMElement;
-      },
+      }
     ) => void;
     1: any;
   }
-  type EventHandlerUnion<T, E extends Event> =
-    | EventHandler<T, E>
-    | BoundEventHandler<T, E>;
+  type EventHandlerUnion<T, E extends Event> = EventHandler<T, E> | BoundEventHandler<T, E>;
 
   interface InputEventHandler<T, E extends InputEvent> {
     (
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ): void;
   }
   interface BoundInputEventHandler<T, E extends InputEvent> {
@@ -76,13 +60,8 @@ export namespace JSX {
       data: any,
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ) => void;
     1: any;
   }
@@ -94,13 +73,8 @@ export namespace JSX {
     (
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ): void;
   }
   interface BoundChangeEventHandler<T, E extends Event> {
@@ -108,31 +82,19 @@ export namespace JSX {
       data: any,
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ) => void;
     1: any;
   }
-  type ChangeEventHandlerUnion<T, E extends Event> =
-    | ChangeEventHandler<T, E>
-    | BoundChangeEventHandler<T, E>;
+  type ChangeEventHandlerUnion<T, E extends Event> = ChangeEventHandler<T, E> | BoundChangeEventHandler<T, E>;
 
   interface FocusEventHandler<T, E extends FocusEvent> {
     (
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ): void;
   }
   interface BoundFocusEventHandler<T, E extends FocusEvent> {
@@ -140,13 +102,8 @@ export namespace JSX {
       data: any,
       e: E & {
         currentTarget: T;
-        target: T extends
-          | HTMLInputElement
-          | HTMLSelectElement
-          | HTMLTextAreaElement
-          ? T
-          : DOMElement;
-      },
+        target: T extends HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement ? T : DOMElement;
+      }
     ) => void;
     1: any;
   }
@@ -183,9 +140,7 @@ export namespace JSX {
     [Key in keyof Directives as `use:${Key}`]?: Directives[Key];
   };
   type DirectiveFunctionAttributes<T> = {
-    [K in keyof DirectiveFunctions as string extends K
-      ? never
-      : `use:${K}`]?: DirectiveFunctions[K] extends (
+    [K in keyof DirectiveFunctions as string extends K ? never : `use:${K}`]?: DirectiveFunctions[K] extends (
       el: infer E, // will be unknown if not provided
       ...rest: infer R // use rest so that we can check whether it's provided or not
     ) => void
@@ -205,16 +160,10 @@ export namespace JSX {
     [Key in keyof ExplicitAttributes as `attr:${Key}`]?: ExplicitAttributes[Key];
   };
   type OnAttributes<T> = {
-    [Key in keyof CustomEvents as `on:${Key}`]?: EventHandler<
-      T,
-      CustomEvents[Key]
-    >;
+    [Key in keyof CustomEvents as `on:${Key}`]?: EventHandler<T, CustomEvents[Key]>;
   };
   type OnCaptureAttributes<T> = {
-    [Key in keyof CustomCaptureEvents as `oncapture:${Key}`]?: EventHandler<
-      T,
-      CustomCaptureEvents[Key]
-    >;
+    [Key in keyof CustomCaptureEvents as `oncapture:${Key}`]?: EventHandler<T, CustomCaptureEvents[Key]>;
   };
   interface DOMAttributes<T>
     extends CustomAttributes<T>,
@@ -430,342 +379,317 @@ export namespace JSX {
     [key: `-${string}`]: string | number | undefined;
   }
 
-  type HTMLAutocapitalize =
-    | "off"
-    | "none"
-    | "on"
-    | "sentences"
-    | "words"
-    | "characters";
-  type HTMLDir = "ltr" | "rtl" | "auto";
-  type HTMLFormEncType =
-    | "application/x-www-form-urlencoded"
-    | "multipart/form-data"
-    | "text/plain";
-  type HTMLFormMethod = "post" | "get" | "dialog";
-  type HTMLCrossorigin = "anonymous" | "use-credentials" | "";
+  type HTMLAutocapitalize = 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
+  type HTMLDir = 'ltr' | 'rtl' | 'auto';
+  type HTMLFormEncType = 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+  type HTMLFormMethod = 'post' | 'get' | 'dialog';
+  type HTMLCrossorigin = 'anonymous' | 'use-credentials' | '';
   type HTMLReferrerPolicy =
-    | "no-referrer"
-    | "no-referrer-when-downgrade"
-    | "origin"
-    | "origin-when-cross-origin"
-    | "same-origin"
-    | "strict-origin"
-    | "strict-origin-when-cross-origin"
-    | "unsafe-url";
+    | 'no-referrer'
+    | 'no-referrer-when-downgrade'
+    | 'origin'
+    | 'origin-when-cross-origin'
+    | 'same-origin'
+    | 'strict-origin'
+    | 'strict-origin-when-cross-origin'
+    | 'unsafe-url';
   type HTMLIframeSandbox =
-    | "allow-downloads-without-user-activation"
-    | "allow-downloads"
-    | "allow-forms"
-    | "allow-modals"
-    | "allow-orientation-lock"
-    | "allow-pointer-lock"
-    | "allow-popups"
-    | "allow-popups-to-escape-sandbox"
-    | "allow-presentation"
-    | "allow-same-origin"
-    | "allow-scripts"
-    | "allow-storage-access-by-user-activation"
-    | "allow-top-navigation"
-    | "allow-top-navigation-by-user-activation"
-    | "allow-top-navigation-to-custom-protocols";
+    | 'allow-downloads-without-user-activation'
+    | 'allow-downloads'
+    | 'allow-forms'
+    | 'allow-modals'
+    | 'allow-orientation-lock'
+    | 'allow-pointer-lock'
+    | 'allow-popups'
+    | 'allow-popups-to-escape-sandbox'
+    | 'allow-presentation'
+    | 'allow-same-origin'
+    | 'allow-scripts'
+    | 'allow-storage-access-by-user-activation'
+    | 'allow-top-navigation'
+    | 'allow-top-navigation-by-user-activation'
+    | 'allow-top-navigation-to-custom-protocols';
   type HTMLLinkAs =
-    | "audio"
-    | "document"
-    | "embed"
-    | "fetch"
-    | "font"
-    | "image"
-    | "object"
-    | "script"
-    | "style"
-    | "track"
-    | "video"
-    | "worker";
+    | 'audio'
+    | 'document'
+    | 'embed'
+    | 'fetch'
+    | 'font'
+    | 'image'
+    | 'object'
+    | 'script'
+    | 'style'
+    | 'track'
+    | 'video'
+    | 'worker';
 
   // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
   interface AriaAttributes {
     /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
-    "aria-activedescendant"?: string;
+    'aria-activedescendant'?: string;
     /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
-    "aria-atomic"?: boolean | "false" | "true";
+    'aria-atomic'?: boolean | 'false' | 'true';
     /**
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      */
-    "aria-autocomplete"?: "none" | "inline" | "list" | "both";
+    'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
     /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
-    "aria-busy"?: boolean | "false" | "true";
+    'aria-busy'?: boolean | 'false' | 'true';
     /**
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
      */
-    "aria-checked"?: boolean | "false" | "mixed" | "true";
+    'aria-checked'?: boolean | 'false' | 'mixed' | 'true';
     /**
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
      */
-    "aria-colcount"?: number | string;
+    'aria-colcount'?: number | string;
     /**
      * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
      * @see aria-colcount @see aria-colspan.
      */
-    "aria-colindex"?: number | string;
+    'aria-colindex'?: number | string;
     /**
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
      */
-    "aria-colspan"?: number | string;
+    'aria-colspan'?: number | string;
     /**
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
      */
-    "aria-controls"?: string;
+    'aria-controls'?: string;
     /** Indicates the element that represents the current item within a container or set of related elements. */
-    "aria-current"?:
-      | boolean
-      | "false"
-      | "true"
-      | "page"
-      | "step"
-      | "location"
-      | "date"
-      | "time";
+    'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
     /**
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
      */
-    "aria-describedby"?: string;
+    'aria-describedby'?: string;
     /**
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      */
-    "aria-details"?: string;
+    'aria-details'?: string;
     /**
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
      */
-    "aria-disabled"?: boolean | "false" | "true";
+    'aria-disabled'?: boolean | 'false' | 'true';
     /**
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
      */
-    "aria-dropeffect"?: "none" | "copy" | "execute" | "link" | "move" | "popup";
+    'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
     /**
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
      */
-    "aria-errormessage"?: string;
+    'aria-errormessage'?: string;
     /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
-    "aria-expanded"?: boolean | "false" | "true";
+    'aria-expanded'?: boolean | 'false' | 'true';
     /**
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
      */
-    "aria-flowto"?: string;
+    'aria-flowto'?: string;
     /**
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
      */
-    "aria-grabbed"?: boolean | "false" | "true";
+    'aria-grabbed'?: boolean | 'false' | 'true';
     /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-    "aria-haspopup"?:
-      | boolean
-      | "false"
-      | "true"
-      | "menu"
-      | "listbox"
-      | "tree"
-      | "grid"
-      | "dialog";
+    'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
     /**
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
      */
-    "aria-hidden"?: boolean | "false" | "true";
+    'aria-hidden'?: boolean | 'false' | 'true';
     /**
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      */
-    "aria-invalid"?: boolean | "false" | "true" | "grammar" | "spelling";
+    'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
     /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
-    "aria-keyshortcuts"?: string;
+    'aria-keyshortcuts'?: string;
     /**
      * Defines a string value that labels the current element.
      * @see aria-labelledby.
      */
-    "aria-label"?: string;
+    'aria-label'?: string;
     /**
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      */
-    "aria-labelledby"?: string;
+    'aria-labelledby'?: string;
     /** Defines the hierarchical level of an element within a structure. */
-    "aria-level"?: number | string;
+    'aria-level'?: number | string;
     /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
-    "aria-live"?: "off" | "assertive" | "polite";
+    'aria-live'?: 'off' | 'assertive' | 'polite';
     /** Indicates whether an element is modal when displayed. */
-    "aria-modal"?: boolean | "false" | "true";
+    'aria-modal'?: boolean | 'false' | 'true';
     /** Indicates whether a text box accepts multiple lines of input or only a single line. */
-    "aria-multiline"?: boolean | "false" | "true";
+    'aria-multiline'?: boolean | 'false' | 'true';
     /** Indicates that the user may select more than one item from the current selectable descendants. */
-    "aria-multiselectable"?: boolean | "false" | "true";
+    'aria-multiselectable'?: boolean | 'false' | 'true';
     /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
-    "aria-orientation"?: "horizontal" | "vertical";
+    'aria-orientation'?: 'horizontal' | 'vertical';
     /**
      * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
      */
-    "aria-owns"?: string;
+    'aria-owns'?: string;
     /**
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
      */
-    "aria-placeholder"?: string;
+    'aria-placeholder'?: string;
     /**
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
      */
-    "aria-posinset"?: number | string;
+    'aria-posinset'?: number | string;
     /**
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
      */
-    "aria-pressed"?: boolean | "false" | "mixed" | "true";
+    'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
     /**
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
      */
-    "aria-readonly"?: boolean | "false" | "true";
+    'aria-readonly'?: boolean | 'false' | 'true';
     /**
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
      */
-    "aria-relevant"?:
-      | "additions"
-      | "additions removals"
-      | "additions text"
-      | "all"
-      | "removals"
-      | "removals additions"
-      | "removals text"
-      | "text"
-      | "text additions"
-      | "text removals";
+    'aria-relevant'?:
+      | 'additions'
+      | 'additions removals'
+      | 'additions text'
+      | 'all'
+      | 'removals'
+      | 'removals additions'
+      | 'removals text'
+      | 'text'
+      | 'text additions'
+      | 'text removals';
     /** Indicates that user input is required on the element before a form may be submitted. */
-    "aria-required"?: boolean | "false" | "true";
+    'aria-required'?: boolean | 'false' | 'true';
     /** Defines a human-readable, author-localized description for the role of an element. */
-    "aria-roledescription"?: string;
+    'aria-roledescription'?: string;
     /**
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
      */
-    "aria-rowcount"?: number | string;
+    'aria-rowcount'?: number | string;
     /**
      * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
      * @see aria-rowcount @see aria-rowspan.
      */
-    "aria-rowindex"?: number | string;
+    'aria-rowindex'?: number | string;
     /**
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
      */
-    "aria-rowspan"?: number | string;
+    'aria-rowspan'?: number | string;
     /**
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
      */
-    "aria-selected"?: boolean | "false" | "true";
+    'aria-selected'?: boolean | 'false' | 'true';
     /**
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
      */
-    "aria-setsize"?: number | string;
+    'aria-setsize'?: number | string;
     /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-    "aria-sort"?: "none" | "ascending" | "descending" | "other";
+    'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
     /** Defines the maximum allowed value for a range widget. */
-    "aria-valuemax"?: number | string;
+    'aria-valuemax'?: number | string;
     /** Defines the minimum allowed value for a range widget. */
-    "aria-valuemin"?: number | string;
+    'aria-valuemin'?: number | string;
     /**
      * Defines the current value for a range widget.
      * @see aria-valuetext.
      */
-    "aria-valuenow"?: number | string;
+    'aria-valuenow'?: number | string;
     /** Defines the human readable text alternative of aria-valuenow for a range widget. */
-    "aria-valuetext"?: string;
+    'aria-valuetext'?: string;
     role?:
-      | "alert"
-      | "alertdialog"
-      | "application"
-      | "article"
-      | "banner"
-      | "button"
-      | "cell"
-      | "checkbox"
-      | "columnheader"
-      | "combobox"
-      | "complementary"
-      | "contentinfo"
-      | "definition"
-      | "dialog"
-      | "directory"
-      | "document"
-      | "feed"
-      | "figure"
-      | "form"
-      | "grid"
-      | "gridcell"
-      | "group"
-      | "heading"
-      | "img"
-      | "link"
-      | "list"
-      | "listbox"
-      | "listitem"
-      | "log"
-      | "main"
-      | "marquee"
-      | "math"
-      | "menu"
-      | "menubar"
-      | "menuitem"
-      | "menuitemcheckbox"
-      | "menuitemradio"
-      | "meter"
-      | "navigation"
-      | "none"
-      | "note"
-      | "option"
-      | "presentation"
-      | "progressbar"
-      | "radio"
-      | "radiogroup"
-      | "region"
-      | "row"
-      | "rowgroup"
-      | "rowheader"
-      | "scrollbar"
-      | "search"
-      | "searchbox"
-      | "separator"
-      | "slider"
-      | "spinbutton"
-      | "status"
-      | "switch"
-      | "tab"
-      | "table"
-      | "tablist"
-      | "tabpanel"
-      | "term"
-      | "textbox"
-      | "timer"
-      | "toolbar"
-      | "tooltip"
-      | "tree"
-      | "treegrid"
-      | "treeitem";
+      | 'alert'
+      | 'alertdialog'
+      | 'application'
+      | 'article'
+      | 'banner'
+      | 'button'
+      | 'cell'
+      | 'checkbox'
+      | 'columnheader'
+      | 'combobox'
+      | 'complementary'
+      | 'contentinfo'
+      | 'definition'
+      | 'dialog'
+      | 'directory'
+      | 'document'
+      | 'feed'
+      | 'figure'
+      | 'form'
+      | 'grid'
+      | 'gridcell'
+      | 'group'
+      | 'heading'
+      | 'img'
+      | 'link'
+      | 'list'
+      | 'listbox'
+      | 'listitem'
+      | 'log'
+      | 'main'
+      | 'marquee'
+      | 'math'
+      | 'menu'
+      | 'menubar'
+      | 'menuitem'
+      | 'menuitemcheckbox'
+      | 'menuitemradio'
+      | 'meter'
+      | 'navigation'
+      | 'none'
+      | 'note'
+      | 'option'
+      | 'presentation'
+      | 'progressbar'
+      | 'radio'
+      | 'radiogroup'
+      | 'region'
+      | 'row'
+      | 'rowgroup'
+      | 'rowheader'
+      | 'scrollbar'
+      | 'search'
+      | 'searchbox'
+      | 'separator'
+      | 'slider'
+      | 'spinbutton'
+      | 'status'
+      | 'switch'
+      | 'tab'
+      | 'table'
+      | 'tablist'
+      | 'tabpanel'
+      | 'term'
+      | 'textbox'
+      | 'timer'
+      | 'toolbar'
+      | 'tooltip'
+      | 'tree'
+      | 'treegrid'
+      | 'treeitem';
   }
 
   // TODO: Should we allow this?
@@ -780,11 +704,11 @@ export namespace JSX {
     // [key: ClassKeys]: boolean;
     accessKey?: string;
     class?: string | undefined;
-    contenteditable?: boolean | "plaintext-only" | "inherit";
+    contenteditable?: boolean | 'plaintext-only' | 'inherit';
     contextmenu?: string;
     dir?: HTMLDir;
-    draggable?: boolean | "false" | "true";
-    hidden?: boolean | "hidden" | "until-found";
+    draggable?: boolean | 'false' | 'true';
+    hidden?: boolean | 'hidden' | 'until-found';
     id?: string;
     inert?: boolean;
     lang?: string;
@@ -792,11 +716,11 @@ export namespace JSX {
     style?: CSSProperties | string;
     tabindex?: number | string;
     title?: string;
-    translate?: "yes" | "no";
+    translate?: 'yes' | 'no';
     about?: string;
     datatype?: string;
     inlist?: any;
-    popover?: boolean | "manual" | "auto";
+    popover?: boolean | 'manual' | 'auto';
     prefix?: string;
     property?: string;
     resource?: string;
@@ -812,16 +736,8 @@ export namespace JSX {
     itemref?: string;
     part?: string;
     exportparts?: string;
-    inputmode?:
-      | "none"
-      | "text"
-      | "tel"
-      | "url"
-      | "email"
-      | "numeric"
-      | "decimal"
-      | "search";
-    contentEditable?: boolean | "plaintext-only" | "inherit";
+    inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+    contentEditable?: boolean | 'plaintext-only' | 'inherit';
     contextMenu?: string;
     tabIndex?: number | string;
     autoCapitalize?: HTMLAutocapitalize;
@@ -831,15 +747,7 @@ export namespace JSX {
     itemId?: string;
     itemRef?: string;
     exportParts?: string;
-    inputMode?:
-      | "none"
-      | "text"
-      | "tel"
-      | "url"
-      | "email"
-      | "numeric"
-      | "decimal"
-      | "search";
+    inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
   }
   interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
     download?: any;
@@ -863,7 +771,7 @@ export namespace JSX {
     ping?: string;
     referrerpolicy?: HTMLReferrerPolicy;
     rel?: string;
-    shape?: "rect" | "circle" | "poly" | "default";
+    shape?: 'rect' | 'circle' | 'poly' | 'default';
     target?: string;
     referrerPolicy?: HTMLReferrerPolicy;
   }
@@ -884,9 +792,9 @@ export namespace JSX {
     formnovalidate?: boolean;
     formtarget?: string;
     popovertarget?: string;
-    popovertargetaction?: "hide" | "show" | "toggle";
+    popovertargetaction?: 'hide' | 'show' | 'toggle';
     name?: string;
-    type?: "submit" | "reset" | "button";
+    type?: 'submit' | 'reset' | 'button';
     value?: string;
     formAction?: string | SerializableAttributeValue;
     formEnctype?: HTMLFormEncType;
@@ -894,7 +802,7 @@ export namespace JSX {
     formNoValidate?: boolean;
     formTarget?: string;
     popoverTarget?: string;
-    popoverTargetAction?: "hide" | "show" | "toggle";
+    popoverTargetAction?: 'hide' | 'show' | 'toggle';
   }
   interface CanvasHTMLAttributes<T> extends HTMLAttributes<T> {
     width?: number | string;
@@ -932,7 +840,7 @@ export namespace JSX {
     name?: string;
   }
   interface FormHTMLAttributes<T> extends HTMLAttributes<T> {
-    "accept-charset"?: string;
+    'accept-charset'?: string;
     action?: string | SerializableAttributeValue;
     autocomplete?: string;
     encoding?: HTMLFormEncType;
@@ -947,7 +855,7 @@ export namespace JSX {
     allow?: string;
     allowfullscreen?: boolean;
     height?: number | string;
-    loading?: "eager" | "lazy";
+    loading?: 'eager' | 'lazy';
     name?: string;
     referrerpolicy?: HTMLReferrerPolicy;
     sandbox?: HTMLIframeSandbox | string;
@@ -959,11 +867,11 @@ export namespace JSX {
   interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
     alt?: string;
     crossorigin?: HTMLCrossorigin;
-    decoding?: "sync" | "async" | "auto";
+    decoding?: 'sync' | 'async' | 'auto';
     height?: number | string;
     ismap?: boolean;
     isMap?: boolean;
-    loading?: "eager" | "lazy";
+    loading?: 'eager' | 'lazy';
     referrerpolicy?: HTMLReferrerPolicy;
     referrerPolicy?: HTMLReferrerPolicy;
     sizes?: string;
@@ -975,26 +883,19 @@ export namespace JSX {
     width?: number | string;
     crossOrigin?: HTMLCrossorigin;
     elementtiming?: string;
-    fetchpriority?: "high" | "low" | "auto";
+    fetchpriority?: 'high' | 'low' | 'auto';
   }
   interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
     accept?: string;
     alt?: string;
     autocomplete?: string;
-    autocorrect?: "on" | "off";
+    autocorrect?: 'on' | 'off';
     autofocus?: boolean;
     capture?: boolean | string;
     checked?: boolean;
     crossorigin?: HTMLCrossorigin;
     disabled?: boolean;
-    enterkeyhint?:
-      | "enter"
-      | "done"
-      | "go"
-      | "next"
-      | "previous"
-      | "search"
-      | "send";
+    enterkeyhint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send';
     form?: string;
     formaction?: string | SerializableAttributeValue;
     formenctype?: HTMLFormEncType;
@@ -1055,7 +956,7 @@ export namespace JSX {
     as?: HTMLLinkAs;
     crossorigin?: HTMLCrossorigin;
     disabled?: boolean;
-    fetchpriority?: "high" | "low" | "auto";
+    fetchpriority?: 'high' | 'low' | 'auto';
     href?: string;
     hreflang?: string;
     imagesizes?: string;
@@ -1079,19 +980,19 @@ export namespace JSX {
     loop?: boolean;
     mediagroup?: string;
     muted?: boolean;
-    preload?: "none" | "metadata" | "auto" | "";
+    preload?: 'none' | 'metadata' | 'auto' | '';
     src?: string;
     crossOrigin?: HTMLCrossorigin;
     mediaGroup?: string;
   }
   interface MenuHTMLAttributes<T> extends HTMLAttributes<T> {
     label?: string;
-    type?: "context" | "toolbar";
+    type?: 'context' | 'toolbar';
   }
   interface MetaHTMLAttributes<T> extends HTMLAttributes<T> {
     charset?: string;
     content?: string;
-    "http-equiv"?: string;
+    'http-equiv'?: string;
     name?: string;
     media?: string;
   }
@@ -1120,7 +1021,7 @@ export namespace JSX {
   interface OlHTMLAttributes<T> extends HTMLAttributes<T> {
     reversed?: boolean;
     start?: number | string;
-    type?: "1" | "a" | "A" | "i" | "I";
+    type?: '1' | 'a' | 'A' | 'i' | 'I';
   }
   interface OptgroupHTMLAttributes<T> extends HTMLAttributes<T> {
     disabled?: boolean;
@@ -1171,8 +1072,7 @@ export namespace JSX {
     size?: number | string;
     value?: string | string[] | number;
   }
-  interface HTMLSlotElementAttributes<T = HTMLSlotElement>
-    extends HTMLAttributes<T> {
+  interface HTMLSlotElementAttributes<T = HTMLSlotElement> extends HTMLAttributes<T> {
     name?: string;
   }
   interface SourceHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1195,8 +1095,7 @@ export namespace JSX {
     colSpan?: number | string;
     rowSpan?: number | string;
   }
-  interface TemplateHTMLAttributes<T extends HTMLTemplateElement>
-    extends HTMLAttributes<T> {
+  interface TemplateHTMLAttributes<T extends HTMLTemplateElement> extends HTMLAttributes<T> {
     content?: DocumentFragment;
   }
   interface TextareaHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1205,14 +1104,7 @@ export namespace JSX {
     cols?: number | string;
     dirname?: string;
     disabled?: boolean;
-    enterkeyhint?:
-      | "enter"
-      | "done"
-      | "go"
-      | "next"
-      | "previous"
-      | "search"
-      | "send";
+    enterkeyhint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send';
     form?: string;
     maxlength?: number | string;
     minlength?: number | string;
@@ -1222,7 +1114,7 @@ export namespace JSX {
     required?: boolean;
     rows?: number | string;
     value?: string | string[] | number;
-    wrap?: "hard" | "soft" | "off";
+    wrap?: 'hard' | 'soft' | 'off';
     maxLength?: number | string;
     minLength?: number | string;
     readOnly?: boolean;
@@ -1233,7 +1125,7 @@ export namespace JSX {
     rowspan?: number | string;
     colSpan?: number | string;
     rowSpan?: number | string;
-    scope?: "col" | "row" | "rowgroup" | "colgroup";
+    scope?: 'col' | 'row' | 'rowgroup' | 'colgroup';
   }
   interface TimeHTMLAttributes<T> extends HTMLAttributes<T> {
     datetime?: string;
@@ -1241,7 +1133,7 @@ export namespace JSX {
   }
   interface TrackHTMLAttributes<T> extends HTMLAttributes<T> {
     default?: boolean;
-    kind?: "subtitles" | "captions" | "descriptions" | "chapters" | "metadata";
+    kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
     label?: string;
     src?: string;
     srclang?: string;
@@ -1253,65 +1145,65 @@ export namespace JSX {
     width?: number | string;
   }
   type SVGPreserveAspectRatio =
-    | "none"
-    | "xMinYMin"
-    | "xMidYMin"
-    | "xMaxYMin"
-    | "xMinYMid"
-    | "xMidYMid"
-    | "xMaxYMid"
-    | "xMinYMax"
-    | "xMidYMax"
-    | "xMaxYMax"
-    | "xMinYMin meet"
-    | "xMidYMin meet"
-    | "xMaxYMin meet"
-    | "xMinYMid meet"
-    | "xMidYMid meet"
-    | "xMaxYMid meet"
-    | "xMinYMax meet"
-    | "xMidYMax meet"
-    | "xMaxYMax meet"
-    | "xMinYMin slice"
-    | "xMidYMin slice"
-    | "xMaxYMin slice"
-    | "xMinYMid slice"
-    | "xMidYMid slice"
-    | "xMaxYMid slice"
-    | "xMinYMax slice"
-    | "xMidYMax slice"
-    | "xMaxYMax slice";
+    | 'none'
+    | 'xMinYMin'
+    | 'xMidYMin'
+    | 'xMaxYMin'
+    | 'xMinYMid'
+    | 'xMidYMid'
+    | 'xMaxYMid'
+    | 'xMinYMax'
+    | 'xMidYMax'
+    | 'xMaxYMax'
+    | 'xMinYMin meet'
+    | 'xMidYMin meet'
+    | 'xMaxYMin meet'
+    | 'xMinYMid meet'
+    | 'xMidYMid meet'
+    | 'xMaxYMid meet'
+    | 'xMinYMax meet'
+    | 'xMidYMax meet'
+    | 'xMaxYMax meet'
+    | 'xMinYMin slice'
+    | 'xMidYMin slice'
+    | 'xMaxYMin slice'
+    | 'xMinYMid slice'
+    | 'xMidYMid slice'
+    | 'xMaxYMid slice'
+    | 'xMinYMax slice'
+    | 'xMidYMax slice'
+    | 'xMaxYMax slice';
   type ImagePreserveAspectRatio =
     | SVGPreserveAspectRatio
-    | "defer none"
-    | "defer xMinYMin"
-    | "defer xMidYMin"
-    | "defer xMaxYMin"
-    | "defer xMinYMid"
-    | "defer xMidYMid"
-    | "defer xMaxYMid"
-    | "defer xMinYMax"
-    | "defer xMidYMax"
-    | "defer xMaxYMax"
-    | "defer xMinYMin meet"
-    | "defer xMidYMin meet"
-    | "defer xMaxYMin meet"
-    | "defer xMinYMid meet"
-    | "defer xMidYMid meet"
-    | "defer xMaxYMid meet"
-    | "defer xMinYMax meet"
-    | "defer xMidYMax meet"
-    | "defer xMaxYMax meet"
-    | "defer xMinYMin slice"
-    | "defer xMidYMin slice"
-    | "defer xMaxYMin slice"
-    | "defer xMinYMid slice"
-    | "defer xMidYMid slice"
-    | "defer xMaxYMid slice"
-    | "defer xMinYMax slice"
-    | "defer xMidYMax slice"
-    | "defer xMaxYMax slice";
-  type SVGUnits = "userSpaceOnUse" | "objectBoundingBox";
+    | 'defer none'
+    | 'defer xMinYMin'
+    | 'defer xMidYMin'
+    | 'defer xMaxYMin'
+    | 'defer xMinYMid'
+    | 'defer xMidYMid'
+    | 'defer xMaxYMid'
+    | 'defer xMinYMax'
+    | 'defer xMidYMax'
+    | 'defer xMaxYMax'
+    | 'defer xMinYMin meet'
+    | 'defer xMidYMin meet'
+    | 'defer xMaxYMin meet'
+    | 'defer xMinYMid meet'
+    | 'defer xMidYMid meet'
+    | 'defer xMaxYMid meet'
+    | 'defer xMinYMax meet'
+    | 'defer xMidYMax meet'
+    | 'defer xMaxYMax meet'
+    | 'defer xMinYMin slice'
+    | 'defer xMidYMin slice'
+    | 'defer xMaxYMin slice'
+    | 'defer xMinYMid slice'
+    | 'defer xMidYMid slice'
+    | 'defer xMaxYMid slice'
+    | 'defer xMinYMax slice'
+    | 'defer xMidYMax slice'
+    | 'defer xMaxYMax slice';
+  type SVGUnits = 'userSpaceOnUse' | 'objectBoundingBox';
   interface CoreSVGAttributes<T> extends AriaAttributes, DOMAttributes<T> {
     id?: string;
     lang?: string;
@@ -1331,7 +1223,7 @@ export namespace JSX {
     systemLanguage?: string;
   }
   interface ExternalResourceSVGAttributes {
-    externalResourcesRequired?: "true" | "false";
+    externalResourcesRequired?: 'true' | 'false';
   }
   interface AnimationTimingSVGAttributes {
     begin?: string;
@@ -1339,13 +1231,13 @@ export namespace JSX {
     end?: string;
     min?: string;
     max?: string;
-    restart?: "always" | "whenNotActive" | "never";
-    repeatCount?: number | "indefinite";
+    restart?: 'always' | 'whenNotActive' | 'never';
+    repeatCount?: number | 'indefinite';
     repeatDur?: string;
-    fill?: "freeze" | "remove";
+    fill?: 'freeze' | 'remove';
   }
   interface AnimationValueSVGAttributes {
-    calcMode?: "discrete" | "linear" | "paced" | "spline";
+    calcMode?: 'discrete' | 'linear' | 'paced' | 'spline';
     values?: string;
     keyTimes?: string;
     keySplines?: string;
@@ -1355,146 +1247,109 @@ export namespace JSX {
   }
   interface AnimationAdditionSVGAttributes {
     attributeName?: string;
-    additive?: "replace" | "sum";
-    accumulate?: "none" | "sum";
+    additive?: 'replace' | 'sum';
+    accumulate?: 'none' | 'sum';
   }
   interface AnimationAttributeTargetSVGAttributes {
     attributeName?: string;
-    attributeType?: "CSS" | "XML" | "auto";
+    attributeType?: 'CSS' | 'XML' | 'auto';
   }
   interface PresentationSVGAttributes {
-    "alignment-baseline"?:
-      | "auto"
-      | "baseline"
-      | "before-edge"
-      | "text-before-edge"
-      | "middle"
-      | "central"
-      | "after-edge"
-      | "text-after-edge"
-      | "ideographic"
-      | "alphabetic"
-      | "hanging"
-      | "mathematical"
-      | "inherit";
-    "baseline-shift"?: number | string;
+    'alignment-baseline'?:
+      | 'auto'
+      | 'baseline'
+      | 'before-edge'
+      | 'text-before-edge'
+      | 'middle'
+      | 'central'
+      | 'after-edge'
+      | 'text-after-edge'
+      | 'ideographic'
+      | 'alphabetic'
+      | 'hanging'
+      | 'mathematical'
+      | 'inherit';
+    'baseline-shift'?: number | string;
     clip?: string;
-    "clip-path"?: string;
-    "clip-rule"?: "nonzero" | "evenodd" | "inherit";
+    'clip-path'?: string;
+    'clip-rule'?: 'nonzero' | 'evenodd' | 'inherit';
     color?: string;
-    "color-interpolation"?: "auto" | "sRGB" | "linearRGB" | "inherit";
-    "color-interpolation-filters"?: "auto" | "sRGB" | "linearRGB" | "inherit";
-    "color-profile"?: string;
-    "color-rendering"?:
-      | "auto"
-      | "optimizeSpeed"
-      | "optimizeQuality"
-      | "inherit";
+    'color-interpolation'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit';
+    'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit';
+    'color-profile'?: string;
+    'color-rendering'?: 'auto' | 'optimizeSpeed' | 'optimizeQuality' | 'inherit';
     cursor?: string;
-    direction?: "ltr" | "rtl" | "inherit";
+    direction?: 'ltr' | 'rtl' | 'inherit';
     display?: string;
-    "dominant-baseline"?:
-      | "auto"
-      | "text-bottom"
-      | "alphabetic"
-      | "ideographic"
-      | "middle"
-      | "central"
-      | "mathematical"
-      | "hanging"
-      | "text-top"
-      | "inherit";
-    "enable-background"?: string;
+    'dominant-baseline'?:
+      | 'auto'
+      | 'text-bottom'
+      | 'alphabetic'
+      | 'ideographic'
+      | 'middle'
+      | 'central'
+      | 'mathematical'
+      | 'hanging'
+      | 'text-top'
+      | 'inherit';
+    'enable-background'?: string;
     fill?: string;
-    "fill-opacity"?: number | string | "inherit";
-    "fill-rule"?: "nonzero" | "evenodd" | "inherit";
+    'fill-opacity'?: number | string | 'inherit';
+    'fill-rule'?: 'nonzero' | 'evenodd' | 'inherit';
     filter?: string;
-    "flood-color"?: string;
-    "flood-opacity"?: number | string | "inherit";
-    "font-family"?: string;
-    "font-size"?: string;
-    "font-size-adjust"?: number | string;
-    "font-stretch"?: string;
-    "font-style"?: "normal" | "italic" | "oblique" | "inherit";
-    "font-variant"?: string;
-    "font-weight"?: number | string;
-    "glyph-orientation-horizontal"?: string;
-    "glyph-orientation-vertical"?: string;
-    "image-rendering"?:
-      | "auto"
-      | "optimizeQuality"
-      | "optimizeSpeed"
-      | "inherit";
+    'flood-color'?: string;
+    'flood-opacity'?: number | string | 'inherit';
+    'font-family'?: string;
+    'font-size'?: string;
+    'font-size-adjust'?: number | string;
+    'font-stretch'?: string;
+    'font-style'?: 'normal' | 'italic' | 'oblique' | 'inherit';
+    'font-variant'?: string;
+    'font-weight'?: number | string;
+    'glyph-orientation-horizontal'?: string;
+    'glyph-orientation-vertical'?: string;
+    'image-rendering'?: 'auto' | 'optimizeQuality' | 'optimizeSpeed' | 'inherit';
     kerning?: string;
-    "letter-spacing"?: number | string;
-    "lighting-color"?: string;
-    "marker-end"?: string;
-    "marker-mid"?: string;
-    "marker-start"?: string;
+    'letter-spacing'?: number | string;
+    'lighting-color'?: string;
+    'marker-end'?: string;
+    'marker-mid'?: string;
+    'marker-start'?: string;
     mask?: string;
-    opacity?: number | string | "inherit";
-    overflow?: "visible" | "hidden" | "scroll" | "auto" | "inherit";
+    opacity?: number | string | 'inherit';
+    overflow?: 'visible' | 'hidden' | 'scroll' | 'auto' | 'inherit';
     pathLength?: string | number;
-    "pointer-events"?:
-      | "bounding-box"
-      | "visiblePainted"
-      | "visibleFill"
-      | "visibleStroke"
-      | "visible"
-      | "painted"
-      | "color"
-      | "fill"
-      | "stroke"
-      | "all"
-      | "none"
-      | "inherit";
-    "shape-rendering"?:
-      | "auto"
-      | "optimizeSpeed"
-      | "crispEdges"
-      | "geometricPrecision"
-      | "inherit";
-    "stop-color"?: string;
-    "stop-opacity"?: number | string | "inherit";
+    'pointer-events'?:
+      | 'bounding-box'
+      | 'visiblePainted'
+      | 'visibleFill'
+      | 'visibleStroke'
+      | 'visible'
+      | 'painted'
+      | 'color'
+      | 'fill'
+      | 'stroke'
+      | 'all'
+      | 'none'
+      | 'inherit';
+    'shape-rendering'?: 'auto' | 'optimizeSpeed' | 'crispEdges' | 'geometricPrecision' | 'inherit';
+    'stop-color'?: string;
+    'stop-opacity'?: number | string | 'inherit';
     stroke?: string;
-    "stroke-dasharray"?: string;
-    "stroke-dashoffset"?: number | string;
-    "stroke-linecap"?: "butt" | "round" | "square" | "inherit";
-    "stroke-linejoin"?:
-      | "arcs"
-      | "bevel"
-      | "miter"
-      | "miter-clip"
-      | "round"
-      | "inherit";
-    "stroke-miterlimit"?: number | string | "inherit";
-    "stroke-opacity"?: number | string | "inherit";
-    "stroke-width"?: number | string;
-    "text-anchor"?: "start" | "middle" | "end" | "inherit";
-    "text-decoration"?:
-      | "none"
-      | "underline"
-      | "overline"
-      | "line-through"
-      | "blink"
-      | "inherit";
-    "text-rendering"?:
-      | "auto"
-      | "optimizeSpeed"
-      | "optimizeLegibility"
-      | "geometricPrecision"
-      | "inherit";
-    "unicode-bidi"?: string;
-    visibility?: "visible" | "hidden" | "collapse" | "inherit";
-    "word-spacing"?: number | string;
-    "writing-mode"?:
-      | "lr-tb"
-      | "rl-tb"
-      | "tb-rl"
-      | "lr"
-      | "rl"
-      | "tb"
-      | "inherit";
+    'stroke-dasharray'?: string;
+    'stroke-dashoffset'?: number | string;
+    'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit';
+    'stroke-linejoin'?: 'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round' | 'inherit';
+    'stroke-miterlimit'?: number | string | 'inherit';
+    'stroke-opacity'?: number | string | 'inherit';
+    'stroke-width'?: number | string;
+    'text-anchor'?: 'start' | 'middle' | 'end' | 'inherit';
+    'text-decoration'?: 'none' | 'underline' | 'overline' | 'line-through' | 'blink' | 'inherit';
+    'text-rendering'?: 'auto' | 'optimizeSpeed' | 'optimizeLegibility' | 'geometricPrecision' | 'inherit';
+    'unicode-bidi'?: string;
+    visibility?: 'visible' | 'hidden' | 'collapse' | 'inherit';
+    'word-spacing'?: number | string;
+    'writing-mode'?: 'lr-tb' | 'rl-tb' | 'tb-rl' | 'lr' | 'rl' | 'tb' | 'inherit';
   }
   interface AnimationElementSVGAttributes<T>
     extends CoreSVGAttributes<T>,
@@ -1505,18 +1360,18 @@ export namespace JSX {
       ShapeElementSVGAttributes<T>,
       Pick<
         PresentationSVGAttributes,
-        | "clip-path"
-        | "mask"
-        | "cursor"
-        | "opacity"
-        | "filter"
-        | "enable-background"
-        | "color-interpolation"
-        | "color-rendering"
+        | 'clip-path'
+        | 'mask'
+        | 'cursor'
+        | 'opacity'
+        | 'filter'
+        | 'enable-background'
+        | 'color-interpolation'
+        | 'color-rendering'
       > {}
   interface FilterPrimitiveElementSVGAttributes<T>
     extends CoreSVGAttributes<T>,
-      Pick<PresentationSVGAttributes, "color-interpolation-filters"> {
+      Pick<PresentationSVGAttributes, 'color-interpolation-filters'> {
     x?: number | string;
     y?: number | string;
     width?: number | string;
@@ -1540,85 +1395,85 @@ export namespace JSX {
       StylableSVGAttributes {
     gradientUnits?: SVGUnits;
     gradientTransform?: string;
-    spreadMethod?: "pad" | "reflect" | "repeat";
+    spreadMethod?: 'pad' | 'reflect' | 'repeat';
     href?: string;
   }
   interface GraphicsElementSVGAttributes<T>
     extends CoreSVGAttributes<T>,
       Pick<
         PresentationSVGAttributes,
-        | "clip-rule"
-        | "mask"
-        | "pointer-events"
-        | "cursor"
-        | "opacity"
-        | "filter"
-        | "display"
-        | "visibility"
-        | "color-interpolation"
-        | "color-rendering"
+        | 'clip-rule'
+        | 'mask'
+        | 'pointer-events'
+        | 'cursor'
+        | 'opacity'
+        | 'filter'
+        | 'display'
+        | 'visibility'
+        | 'color-interpolation'
+        | 'color-rendering'
       > {}
   interface LightSourceElementSVGAttributes<T> extends CoreSVGAttributes<T> {}
   interface NewViewportSVGAttributes<T>
     extends CoreSVGAttributes<T>,
-      Pick<PresentationSVGAttributes, "overflow" | "clip"> {
+      Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
     viewBox?: string;
   }
   interface ShapeElementSVGAttributes<T>
     extends CoreSVGAttributes<T>,
       Pick<
         PresentationSVGAttributes,
-        | "color"
-        | "fill"
-        | "fill-rule"
-        | "fill-opacity"
-        | "stroke"
-        | "stroke-width"
-        | "stroke-linecap"
-        | "stroke-linejoin"
-        | "stroke-miterlimit"
-        | "stroke-dasharray"
-        | "stroke-dashoffset"
-        | "stroke-opacity"
-        | "shape-rendering"
-        | "pathLength"
+        | 'color'
+        | 'fill'
+        | 'fill-rule'
+        | 'fill-opacity'
+        | 'stroke'
+        | 'stroke-width'
+        | 'stroke-linecap'
+        | 'stroke-linejoin'
+        | 'stroke-miterlimit'
+        | 'stroke-dasharray'
+        | 'stroke-dashoffset'
+        | 'stroke-opacity'
+        | 'shape-rendering'
+        | 'pathLength'
       > {}
   interface TextContentElementSVGAttributes<T>
     extends CoreSVGAttributes<T>,
       Pick<
         PresentationSVGAttributes,
-        | "font-family"
-        | "font-style"
-        | "font-variant"
-        | "font-weight"
-        | "font-stretch"
-        | "font-size"
-        | "font-size-adjust"
-        | "kerning"
-        | "letter-spacing"
-        | "word-spacing"
-        | "text-decoration"
-        | "glyph-orientation-horizontal"
-        | "glyph-orientation-vertical"
-        | "direction"
-        | "unicode-bidi"
-        | "text-anchor"
-        | "dominant-baseline"
-        | "color"
-        | "fill"
-        | "fill-rule"
-        | "fill-opacity"
-        | "stroke"
-        | "stroke-width"
-        | "stroke-linecap"
-        | "stroke-linejoin"
-        | "stroke-miterlimit"
-        | "stroke-dasharray"
-        | "stroke-dashoffset"
-        | "stroke-opacity"
+        | 'font-family'
+        | 'font-style'
+        | 'font-variant'
+        | 'font-weight'
+        | 'font-stretch'
+        | 'font-size'
+        | 'font-size-adjust'
+        | 'kerning'
+        | 'letter-spacing'
+        | 'word-spacing'
+        | 'text-decoration'
+        | 'glyph-orientation-horizontal'
+        | 'glyph-orientation-vertical'
+        | 'direction'
+        | 'unicode-bidi'
+        | 'text-anchor'
+        | 'dominant-baseline'
+        | 'color'
+        | 'fill'
+        | 'fill-rule'
+        | 'fill-opacity'
+        | 'stroke'
+        | 'stroke-width'
+        | 'stroke-linecap'
+        | 'stroke-linejoin'
+        | 'stroke-miterlimit'
+        | 'stroke-dasharray'
+        | 'stroke-dashoffset'
+        | 'stroke-opacity'
       > {}
   interface ZoomAndPanSVGAttributes {
-    zoomAndPan?: "disable" | "magnify";
+    zoomAndPan?: 'disable' | 'magnify';
   }
   interface AnimateSVGAttributes<T>
     extends AnimationElementSVGAttributes<T>,
@@ -1626,10 +1481,7 @@ export namespace JSX {
       AnimationTimingSVGAttributes,
       AnimationValueSVGAttributes,
       AnimationAdditionSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "color-interpolation" | "color-rendering"
-      > {}
+      Pick<PresentationSVGAttributes, 'color-interpolation' | 'color-rendering'> {}
   interface AnimateMotionSVGAttributes<T>
     extends AnimationElementSVGAttributes<T>,
       AnimationTimingSVGAttributes,
@@ -1637,8 +1489,8 @@ export namespace JSX {
       AnimationAdditionSVGAttributes {
     path?: string;
     keyPoints?: string;
-    rotate?: number | string | "auto" | "auto-reverse";
-    origin?: "default";
+    rotate?: number | string | 'auto' | 'auto-reverse';
+    origin?: 'default';
   }
   interface AnimateTransformSVGAttributes<T>
     extends AnimationElementSVGAttributes<T>,
@@ -1646,7 +1498,7 @@ export namespace JSX {
       AnimationTimingSVGAttributes,
       AnimationValueSVGAttributes,
       AnimationAdditionSVGAttributes {
-    type?: "translate" | "scale" | "rotate" | "skewX" | "skewY";
+    type?: 'translate' | 'scale' | 'rotate' | 'skewX' | 'skewY';
   }
   interface CircleSVGAttributes<T>
     extends GraphicsElementSVGAttributes<T>,
@@ -1664,7 +1516,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "clip-path"> {
+      Pick<PresentationSVGAttributes, 'clip-path'> {
     clipPathUnits?: SVGUnits;
   }
   interface DefsSVGAttributes<T>
@@ -1673,9 +1525,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes {}
-  interface DescSVGAttributes<T>
-    extends CoreSVGAttributes<T>,
-      StylableSVGAttributes {}
+  interface DescSVGAttributes<T> extends CoreSVGAttributes<T>, StylableSVGAttributes {}
   interface EllipseSVGAttributes<T>
     extends GraphicsElementSVGAttributes<T>,
       ShapeElementSVGAttributes<T>,
@@ -1692,13 +1542,13 @@ export namespace JSX {
     extends FilterPrimitiveElementSVGAttributes<T>,
       DoubleInputFilterSVGAttributes,
       StylableSVGAttributes {
-    mode?: "normal" | "multiply" | "screen" | "darken" | "lighten";
+    mode?: 'normal' | 'multiply' | 'screen' | 'darken' | 'lighten';
   }
   interface FeColorMatrixSVGAttributes<T>
     extends FilterPrimitiveElementSVGAttributes<T>,
       SingleInputFilterSVGAttributes,
       StylableSVGAttributes {
-    type?: "matrix" | "saturate" | "hueRotate" | "luminanceToAlpha";
+    type?: 'matrix' | 'saturate' | 'hueRotate' | 'luminanceToAlpha';
     values?: string;
   }
   interface FeComponentTransferSVGAttributes<T>
@@ -1709,7 +1559,7 @@ export namespace JSX {
     extends FilterPrimitiveElementSVGAttributes<T>,
       DoubleInputFilterSVGAttributes,
       StylableSVGAttributes {
-    operator?: "over" | "in" | "out" | "atop" | "xor" | "arithmetic";
+    operator?: 'over' | 'in' | 'out' | 'atop' | 'xor' | 'arithmetic';
     k1?: number | string;
     k2?: number | string;
     k3?: number | string;
@@ -1725,15 +1575,15 @@ export namespace JSX {
     bias?: number | string;
     targetX?: number | string;
     targetY?: number | string;
-    edgeMode?: "duplicate" | "wrap" | "none";
+    edgeMode?: 'duplicate' | 'wrap' | 'none';
     kernelUnitLength?: number | string;
-    preserveAlpha?: "true" | "false";
+    preserveAlpha?: 'true' | 'false';
   }
   interface FeDiffuseLightingSVGAttributes<T>
     extends FilterPrimitiveElementSVGAttributes<T>,
       SingleInputFilterSVGAttributes,
       StylableSVGAttributes,
-      Pick<PresentationSVGAttributes, "color" | "lighting-color"> {
+      Pick<PresentationSVGAttributes, 'color' | 'lighting-color'> {
     surfaceScale?: number | string;
     diffuseConstant?: number | string;
     kernelUnitLength?: number | string;
@@ -1743,11 +1593,10 @@ export namespace JSX {
       DoubleInputFilterSVGAttributes,
       StylableSVGAttributes {
     scale?: number | string;
-    xChannelSelector?: "R" | "G" | "B" | "A";
-    yChannelSelector?: "R" | "G" | "B" | "A";
+    xChannelSelector?: 'R' | 'G' | 'B' | 'A';
+    yChannelSelector?: 'R' | 'G' | 'B' | 'A';
   }
-  interface FeDistantLightSVGAttributes<T>
-    extends LightSourceElementSVGAttributes<T> {
+  interface FeDistantLightSVGAttributes<T> extends LightSourceElementSVGAttributes<T> {
     azimuth?: number | string;
     elevation?: number | string;
   }
@@ -1755,10 +1604,7 @@ export namespace JSX {
     extends CoreSVGAttributes<T>,
       FilterPrimitiveElementSVGAttributes<T>,
       StylableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "color" | "flood-color" | "flood-opacity"
-      > {
+      Pick<PresentationSVGAttributes, 'color' | 'flood-color' | 'flood-opacity'> {
     dx?: number | string;
     dy?: number | string;
     stdDeviation?: number | string;
@@ -1766,12 +1612,9 @@ export namespace JSX {
   interface FeFloodSVGAttributes<T>
     extends FilterPrimitiveElementSVGAttributes<T>,
       StylableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "color" | "flood-color" | "flood-opacity"
-      > {}
+      Pick<PresentationSVGAttributes, 'color' | 'flood-color' | 'flood-opacity'> {}
   interface FeFuncSVGAttributes<T> extends CoreSVGAttributes<T> {
-    type?: "identity" | "table" | "discrete" | "linear" | "gamma";
+    type?: 'identity' | 'table' | 'discrete' | 'linear' | 'gamma';
     tableValues?: string;
     slope?: number | string;
     intercept?: number | string;
@@ -1792,17 +1635,13 @@ export namespace JSX {
     preserveAspectRatio?: SVGPreserveAspectRatio;
     href?: string;
   }
-  interface FeMergeSVGAttributes<T>
-    extends FilterPrimitiveElementSVGAttributes<T>,
-      StylableSVGAttributes {}
-  interface FeMergeNodeSVGAttributes<T>
-    extends CoreSVGAttributes<T>,
-      SingleInputFilterSVGAttributes {}
+  interface FeMergeSVGAttributes<T> extends FilterPrimitiveElementSVGAttributes<T>, StylableSVGAttributes {}
+  interface FeMergeNodeSVGAttributes<T> extends CoreSVGAttributes<T>, SingleInputFilterSVGAttributes {}
   interface FeMorphologySVGAttributes<T>
     extends FilterPrimitiveElementSVGAttributes<T>,
       SingleInputFilterSVGAttributes,
       StylableSVGAttributes {
-    operator?: "erode" | "dilate";
+    operator?: 'erode' | 'dilate';
     radius?: number | string;
   }
   interface FeOffsetSVGAttributes<T>
@@ -1812,8 +1651,7 @@ export namespace JSX {
     dx?: number | string;
     dy?: number | string;
   }
-  interface FePointLightSVGAttributes<T>
-    extends LightSourceElementSVGAttributes<T> {
+  interface FePointLightSVGAttributes<T> extends LightSourceElementSVGAttributes<T> {
     x?: number | string;
     y?: number | string;
     z?: number | string;
@@ -1822,14 +1660,13 @@ export namespace JSX {
     extends FilterPrimitiveElementSVGAttributes<T>,
       SingleInputFilterSVGAttributes,
       StylableSVGAttributes,
-      Pick<PresentationSVGAttributes, "color" | "lighting-color"> {
+      Pick<PresentationSVGAttributes, 'color' | 'lighting-color'> {
     surfaceScale?: string;
     specularConstant?: string;
     specularExponent?: string;
     kernelUnitLength?: number | string;
   }
-  interface FeSpotLightSVGAttributes<T>
-    extends LightSourceElementSVGAttributes<T> {
+  interface FeSpotLightSVGAttributes<T> extends LightSourceElementSVGAttributes<T> {
     x?: number | string;
     y?: number | string;
     z?: number | string;
@@ -1849,8 +1686,8 @@ export namespace JSX {
     baseFrequency?: number | string;
     numOctaves?: number | string;
     seed?: number | string;
-    stitchTiles?: "stitch" | "noStitch";
-    type?: "fractalNoise" | "turbulence";
+    stitchTiles?: 'stitch' | 'noStitch';
+    type?: 'fractalNoise' | 'turbulence';
   }
   interface FilterSVGAttributes<T>
     extends CoreSVGAttributes<T>,
@@ -1870,7 +1707,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "display" | "visibility"> {
+      Pick<PresentationSVGAttributes, 'display' | 'visibility'> {
     x?: number | string;
     y?: number | string;
     width?: number | string;
@@ -1882,14 +1719,14 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "display" | "visibility"> {}
+      Pick<PresentationSVGAttributes, 'display' | 'visibility'> {}
   interface ImageSVGAttributes<T>
     extends NewViewportSVGAttributes<T>,
       GraphicsElementSVGAttributes<T>,
       ConditionalProcessingSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "color-profile" | "image-rendering"> {
+      Pick<PresentationSVGAttributes, 'color-profile' | 'image-rendering'> {
     x?: number | string;
     y?: number | string;
     width?: number | string;
@@ -1904,17 +1741,13 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "marker-start" | "marker-mid" | "marker-end"
-      > {
+      Pick<PresentationSVGAttributes, 'marker-start' | 'marker-mid' | 'marker-end'> {
     x1?: number | string;
     y1?: number | string;
     x2?: number | string;
     y2?: number | string;
   }
-  interface LinearGradientSVGAttributes<T>
-    extends GradientElementSVGAttributes<T> {
+  interface LinearGradientSVGAttributes<T> extends GradientElementSVGAttributes<T> {
     x1?: number | string;
     x2?: number | string;
     y1?: number | string;
@@ -1925,8 +1758,8 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       FitToViewBoxSVGAttributes,
-      Pick<PresentationSVGAttributes, "overflow" | "clip"> {
-    markerUnits?: "strokeWidth" | "userSpaceOnUse";
+      Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
+    markerUnits?: 'strokeWidth' | 'userSpaceOnUse';
     refX?: number | string;
     refY?: number | string;
     markerWidth?: number | string;
@@ -1934,7 +1767,7 @@ export namespace JSX {
     orient?: string;
   }
   interface MaskSVGAttributes<T>
-    extends Omit<ContainerElementSVGAttributes<T>, "opacity" | "filter">,
+    extends Omit<ContainerElementSVGAttributes<T>, 'opacity' | 'filter'>,
       ConditionalProcessingSVGAttributes,
       ExternalResourceSVGAttributes,
       StylableSVGAttributes {
@@ -1954,10 +1787,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "marker-start" | "marker-mid" | "marker-end"
-      > {
+      Pick<PresentationSVGAttributes, 'marker-start' | 'marker-mid' | 'marker-end'> {
     d?: string;
     pathLength?: number | string;
   }
@@ -1967,7 +1797,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       FitToViewBoxSVGAttributes,
-      Pick<PresentationSVGAttributes, "overflow" | "clip"> {
+      Pick<PresentationSVGAttributes, 'overflow' | 'clip'> {
     x?: number | string;
     y?: number | string;
     width?: number | string;
@@ -1984,10 +1814,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "marker-start" | "marker-mid" | "marker-end"
-      > {
+      Pick<PresentationSVGAttributes, 'marker-start' | 'marker-mid' | 'marker-end'> {
     points?: string;
   }
   interface PolylineSVGAttributes<T>
@@ -1997,14 +1824,10 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "marker-start" | "marker-mid" | "marker-end"
-      > {
+      Pick<PresentationSVGAttributes, 'marker-start' | 'marker-mid' | 'marker-end'> {
     points?: string;
   }
-  interface RadialGradientSVGAttributes<T>
-    extends GradientElementSVGAttributes<T> {
+  interface RadialGradientSVGAttributes<T> extends GradientElementSVGAttributes<T> {
     cx?: number | string;
     cy?: number | string;
     r?: number | string;
@@ -2032,7 +1855,7 @@ export namespace JSX {
   interface StopSVGAttributes<T>
     extends CoreSVGAttributes<T>,
       StylableSVGAttributes,
-      Pick<PresentationSVGAttributes, "color" | "stop-color" | "stop-opacity"> {
+      Pick<PresentationSVGAttributes, 'color' | 'stop-color' | 'stop-opacity'> {
     offset?: number | string;
   }
   interface SvgSVGAttributes<T>
@@ -2060,7 +1883,7 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "display" | "visibility"> {}
+      Pick<PresentationSVGAttributes, 'display' | 'visibility'> {}
   interface SymbolSVGAttributes<T>
     extends ContainerElementSVGAttributes<T>,
       NewViewportSVGAttributes<T>,
@@ -2083,27 +1906,24 @@ export namespace JSX {
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
       TransformableSVGAttributes,
-      Pick<PresentationSVGAttributes, "writing-mode" | "text-rendering"> {
+      Pick<PresentationSVGAttributes, 'writing-mode' | 'text-rendering'> {
     x?: number | string;
     y?: number | string;
     dx?: number | string;
     dy?: number | string;
     rotate?: number | string;
     textLength?: number | string;
-    lengthAdjust?: "spacing" | "spacingAndGlyphs";
+    lengthAdjust?: 'spacing' | 'spacingAndGlyphs';
   }
   interface TextPathSVGAttributes<T>
     extends TextContentElementSVGAttributes<T>,
       ConditionalProcessingSVGAttributes,
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "alignment-baseline" | "baseline-shift" | "display" | "visibility"
-      > {
+      Pick<PresentationSVGAttributes, 'alignment-baseline' | 'baseline-shift' | 'display' | 'visibility'> {
     startOffset?: number | string;
-    method?: "align" | "stretch";
-    spacing?: "auto" | "exact";
+    method?: 'align' | 'stretch';
+    spacing?: 'auto' | 'exact';
     href?: string;
   }
   interface TSpanSVGAttributes<T>
@@ -2111,17 +1931,14 @@ export namespace JSX {
       ConditionalProcessingSVGAttributes,
       ExternalResourceSVGAttributes,
       StylableSVGAttributes,
-      Pick<
-        PresentationSVGAttributes,
-        "alignment-baseline" | "baseline-shift" | "display" | "visibility"
-      > {
+      Pick<PresentationSVGAttributes, 'alignment-baseline' | 'baseline-shift' | 'display' | 'visibility'> {
     x?: number | string;
     y?: number | string;
     dx?: number | string;
     dy?: number | string;
     rotate?: number | string;
     textLength?: number | string;
-    lengthAdjust?: "spacing" | "spacingAndGlyphs";
+    lengthAdjust?: 'spacing' | 'spacingAndGlyphs';
   }
   /**
    * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use
@@ -2338,8 +2155,5 @@ export namespace JSX {
     use: UseSVGAttributes<SVGUseElement>;
     view: ViewSVGAttributes<SVGViewElement>;
   }
-  interface IntrinsicElements
-    extends HTMLElementTags,
-      HTMLElementDeprecatedTags,
-      SVGElementTags {}
+  interface IntrinsicElements extends HTMLElementTags, HTMLElementDeprecatedTags, SVGElementTags {}
 }

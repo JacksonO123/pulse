@@ -1,4 +1,6 @@
 import { createSignal } from '@jacksonotto/signals';
+import Another from './Another';
+import ArrayTest from './ArrayTest';
 
 export type CompProps = {
   property: string;
@@ -21,11 +23,10 @@ const Comp = (_: CompProps) => {
   return (
     <div>
       <span>here</span>
-      <button onClick={change}>
-        test {test()}
-        {bool()}
-      </button>
+      <button onClick={change}>test {test()}</button>
+      {bool() && test() === 0 ? <Another /> : 'epic'}
       <button onClick={another}>click me</button>
+      <ArrayTest />
     </div>
   );
 };
