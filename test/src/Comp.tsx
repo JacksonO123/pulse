@@ -11,8 +11,8 @@ const Comp = (_: CompProps) => {
   const [test, setTest] = createSignal(0);
   const [bool, setBool] = createSignal(false);
 
-  const change = (e: MouseEvent) => {
-    console.log('CLICKING', e.currentTarget);
+  const change = () => {
+    console.log('clicked');
     setTest((prev) => prev + 1);
   };
 

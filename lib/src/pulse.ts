@@ -1,4 +1,12 @@
-import { type Accessor, trackScope, createEffect } from '@jacksonotto/signals';
+import {
+  type Accessor,
+  trackScope,
+  createEffect,
+  onCleanup,
+  currentContext,
+  State,
+  Context
+} from '@jacksonotto/signals';
 import type { JSX } from './jsx.js';
 import { jsxElementToElement, renderChild, eventHandler, replaceElements, insertBefore } from './dom.js';
 
@@ -25,9 +33,11 @@ export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
 ) => {
   let res: JSXElement;
 
-  trackScope(() => {
+  const cleanup = trackScope(() => {
     res = comp(props);
   });
+
+  onCleanup(cleanup);
 
   return res;
 };
@@ -49,42 +59,66 @@ export const insert = (
   parent: Element,
   accessor: Accessor<JSXElement> | Node,
   marker: Node | null,
-  // i have no idea what this means
+  // i have no idea what this does
   initial: any
 ) => {
-  // the equivelant of this function in solidjs is like 100 lines of the most dense js you have ever seen
-  // i have no idea what it does and this is so much shorter i don't get it hope this works :)
-
   if (initial) {
     console.log('HAS INITIAL', { parent, accessor, marker, initial });
   }
 
   if (typeof accessor === 'function') {
     let prevEl: Node | Node[] | null = null;
+    let prevCleanup: (() => void) | null = null;
+    let context: Context | null = null;
+    let computed = false;
 
     createEffect(() => {
-      const value = accessor();
-      if (value === false) {
-        if (prevEl !== null) {
-          (prevEl as Element).remove();
-          prevEl = null;
-        }
-        return;
+      if (!context) {
+        const current = currentContext();
+        if (!current) return;
+        context = current;
       }
 
-      const el = jsxElementToElement(value);
+      if (prevCleanup) prevCleanup();
+      let innerOwned: State<any>[] = [];
 
-      if (prevEl === null) {
-        if (marker !== null) {
-          insertBefore(marker as Element, el);
+      const cleanup = trackScope(() => {
+        const value = accessor();
+
+        const current = currentContext();
+        if (current && !computed) {
+          innerOwned = current.getOwned();
+        }
+
+        if (value === false || value === null || value === undefined) {
+          if (prevEl !== null) {
+            (prevEl as Element).remove();
+            prevEl = null;
+          }
+          return;
+        }
+
+        const el = jsxElementToElement(value);
+
+        if (prevEl === null) {
+          if (marker !== null) {
+            insertBefore(marker as Element, el);
+          } else {
+            renderChild(parent, el);
+          }
         } else {
-          renderChild(parent, el);
+          replaceElements(prevEl, el, marker);
         }
-      } else {
-        replaceElements(prevEl, el, marker);
+
+        prevEl = el;
+      }, false);
+
+      if (!computed) {
+        context.ownMany(innerOwned);
+        computed = true;
       }
 
-      prevEl = el;
+      prevCleanup = cleanup;
     });
   } else {
     renderChild(parent, accessor);

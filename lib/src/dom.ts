@@ -21,9 +21,7 @@ export const jsxElementToElement = (jsxEl: JSXElement): Node | Node[] => {
   if (jsxEl instanceof Node) return jsxEl as Element;
 
   if (Array.isArray(jsxEl)) {
-    // return jsxEl.map((el) => jsxElementToElement(el)).flat();
-    // @ts-ignore
-    return jsxEl.map((el) => jsxElementToElement(el));
+    return jsxEl.map((el) => jsxElementToElement(el)).flat();
   }
 
   return new Text(jsxEl + '');

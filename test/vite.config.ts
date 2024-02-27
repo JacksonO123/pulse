@@ -4,6 +4,6 @@ import pulse from './plugin';
 export default defineConfig({
   plugins: [pulse()],
   build: {
-    // minify: false
+    minify: false
   }
 });
