@@ -80,9 +80,12 @@ class Context {
     this.owned.push(...states);
   }
   dispose() {
+    this.runDisposeEvents();
+    this.owned = [];
+  }
+  runDisposeEvents() {
     this.disposeEvents.forEach((event) => event());
     this.disposeEvents = [];
-    this.owned = [];
   }
   onDispose(fn) {
     this.disposeEvents.push(fn);
@@ -194,12 +197,12 @@ const derived = (fn) => {
   updateCleanup = onCleanup(prevCleanup);
   return value;
 };
-const renderChild = (target, el) => {
-  const element = jsxElementToElement(el);
+const renderChild = (parent, target) => {
+  const element = jsxElementToElement(target);
   if (Array.isArray(element)) {
-    element.forEach((item) => target.appendChild(item));
+    element.forEach((item) => parent.appendChild(item));
   } else {
-    target.appendChild(element);
+    parent.appendChild(element);
   }
 };
 const mount = (comp, root = document.body) => {
@@ -238,11 +241,15 @@ const insertBefore = (target, el) => {
     target.before(element);
   }
 };
-const replaceElements = (target, el, marker) => {
+const replaceElements = (target, el, parent, after) => {
   if (Array.isArray(target)) {
     if (Array.isArray(el)) {
-      if (target.length === 0 && marker) {
-        insertBefore(marker, el);
+      if (target.length === 0) {
+        if (after) insertBefore(after, el);
+        else {
+          console.log('here');
+          renderChild(parent, el);
+        }
         return;
       }
       while (target.length > el.length) {
@@ -258,8 +265,9 @@ const replaceElements = (target, el, marker) => {
         i++;
       }
     } else {
-      if (target.length === 0 && marker) {
-        insertBefore(marker, el);
+      if (target.length === 0) {
+        if (after) insertBefore(after, el);
+        else renderChild(parent, el);
         return;
       }
       while (target.length > 1) {
@@ -334,17 +342,22 @@ const insert = (parent, accessor, marker, initial) => {
   if (typeof accessor === 'function') {
     let prevEl = null;
     let prevCleanup = null;
+    let updateCleanup = void 0;
+    let context = null;
+    let computed = false;
     createEffect(() => {
-      let innerOwned = [];
-      if (prevCleanup) {
-        console.log('calling');
-        prevCleanup();
+      if (!context) {
+        const current = currentContext();
+        if (!current) return;
+        context = current;
       }
+      if (prevCleanup) prevCleanup();
+      let innerOwned = [];
       const cleanup2 = trackScope(() => {
         const value = accessor();
-        const current2 = currentContext();
-        if (current2) {
-          innerOwned = current2.getOwned();
+        const current = currentContext();
+        if (current && !computed) {
+          innerOwned = current.getOwned();
         }
         if (value === false || value === null || value === void 0) {
           if (prevEl !== null) {
@@ -361,14 +374,20 @@ const insert = (parent, accessor, marker, initial) => {
             renderChild(parent, el);
           }
         } else {
-          replaceElements(prevEl, el, marker);
+          replaceElements(prevEl, el, parent, marker);
         }
         prevEl = el;
       }, false);
-      const current = currentContext();
-      if (!current) return;
+      if (!computed) {
+        context.ownMany(innerOwned);
+        computed = true;
+      }
       prevCleanup = cleanup2;
-      current.ownMany(innerOwned);
+      if (updateCleanup) {
+        updateCleanup(cleanup2);
+      } else {
+        updateCleanup = onCleanup(cleanup2);
+      }
     });
   } else {
     renderChild(parent, accessor);
@@ -401,7 +420,9 @@ const ArrayItem = ({ num }) => {
     return _el$;
   })();
 };
-var _tmpl$$2 = /* @__PURE__ */ template(`<div><button>Add</button><button>Remove`);
+var _tmpl$$2 = /* @__PURE__ */ template(
+  `<div><button>Add</button><button>Remove</button><span>what about now`
+);
 const ArrayTest = () => {
   const [arr, setArr] = createSignal([1, 2, 3, 4]);
   const add = () => {
@@ -416,7 +437,8 @@ const ArrayTest = () => {
   return (() => {
     var _el$ = _tmpl$$2(),
       _el$2 = _el$.firstChild,
-      _el$3 = _el$2.nextSibling;
+      _el$3 = _el$2.nextSibling,
+      _el$4 = _el$3.nextSibling;
     _el$2.$$click = add;
     _el$3.$$click = remove;
     insert(
@@ -427,7 +449,7 @@ const ArrayTest = () => {
             num: item
           })
         ),
-      null
+      _el$4
     );
     return _el$;
   })();

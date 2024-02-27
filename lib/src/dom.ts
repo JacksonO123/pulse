@@ -2,12 +2,12 @@ import { trackScope } from '@jacksonotto/signals';
 import { JSX } from './jsx.js';
 import { JSXElement } from './pulse.js';
 
-export const renderChild = (target: Element, el: JSXElement) => {
-  const element = jsxElementToElement(el);
+export const renderChild = (parent: Element, target: JSXElement) => {
+  const element = jsxElementToElement(target);
   if (Array.isArray(element)) {
-    element.forEach((item) => target.appendChild(item));
+    element.forEach((item) => parent.appendChild(item));
   } else {
-    target.appendChild(element);
+    parent.appendChild(element);
   }
 };
 
@@ -55,11 +55,20 @@ export const insertBefore = (target: Element, el: JSXElement) => {
   }
 };
 
-export const replaceElements = (target: Node | Node[], el: Node | Node[], marker: Node | null) => {
+export const replaceElements = (
+  target: Node | Node[],
+  el: Node | Node[],
+  parent: Element,
+  after: Node | null
+) => {
   if (Array.isArray(target)) {
     if (Array.isArray(el)) {
-      if (target.length === 0 && marker) {
-        insertBefore(marker as Element, el);
+      if (target.length === 0) {
+        if (after) insertBefore(after as Element, el);
+        else {
+          console.log('here');
+          renderChild(parent, el);
+        }
         return;
       }
 
@@ -78,8 +87,9 @@ export const replaceElements = (target: Node | Node[], el: Node | Node[], marker
         i++;
       }
     } else {
-      if (target.length === 0 && marker) {
-        insertBefore(marker as Element, el);
+      if (target.length === 0) {
+        if (after) insertBefore(after as Element, el);
+        else renderChild(parent, el);
         return;
       }
 

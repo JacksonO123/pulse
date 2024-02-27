@@ -23,6 +23,8 @@ const ArrayTest = () => {
       {arr().map((item) => (
         <ArrayItem num={item} />
       ))}
+
+      <span>what about now</span>
     </div>
   );
 };

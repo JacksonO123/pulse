@@ -69,6 +69,7 @@ export const insert = (
   if (typeof accessor === 'function') {
     let prevEl: Node | Node[] | null = null;
     let prevCleanup: (() => void) | null = null;
+    let updateCleanup: ((newFn: () => void) => void) | undefined = undefined;
     let context: Context | null = null;
     let computed = false;
 
@@ -107,7 +108,7 @@ export const insert = (
             renderChild(parent, el);
           }
         } else {
-          replaceElements(prevEl, el, marker);
+          replaceElements(prevEl, el, parent, marker);
         }
 
         prevEl = el;
@@ -119,6 +120,12 @@ export const insert = (
       }
 
       prevCleanup = cleanup;
+
+      if (updateCleanup) {
+        updateCleanup(cleanup);
+      } else {
+        updateCleanup = onCleanup(cleanup);
+      }
     });
   } else {
     renderChild(parent, accessor);
