@@ -175,28 +175,6 @@ const createEffect = (fn) => {
   });
   onCleanup(cleanup2);
 };
-const derived = (fn) => {
-  const [value, setValue] = createSignal(null);
-  let prevCleanup = null;
-  let updateCleanup = void 0;
-  const handleDerived = () => {
-    if (prevCleanup) prevCleanup();
-    const cleanup2 = trackScope(() => {
-      setValue(fn());
-      const current = currentContext();
-      if (!current) return;
-      current.addEffect(handleDerived);
-      onCleanup(() => {
-        current.removeEffect(handleDerived);
-      });
-    });
-    prevCleanup = cleanup2;
-    updateCleanup == null ? void 0 : updateCleanup(cleanup2);
-  };
-  handleDerived();
-  updateCleanup = onCleanup(prevCleanup);
-  return value;
-};
 const renderChild = (parent, target) => {
   const element = jsxElementToElement(target);
   if (Array.isArray(element)) {
@@ -390,7 +368,11 @@ const insert = (parent, accessor, marker, initial) => {
       }
     });
   } else {
-    renderChild(parent, accessor);
+    if (marker) {
+      insertBefore(marker, accessor);
+    } else {
+      renderChild(parent, accessor);
+    }
   }
 };
 const delegateEvents = (events, doc = document) => {
@@ -403,109 +385,36 @@ const delegateEvents = (events, doc = document) => {
     }
   }
 };
-var _tmpl$$4 = /* @__PURE__ */ template(`<span>in another component`);
-const Another = () => {
-  return _tmpl$$4();
-};
-var _tmpl$$3 = /* @__PURE__ */ template(`<br>`),
-  _tmpl$2 = /* @__PURE__ */ template(`<span>[item <!>]`);
-const ArrayItem = ({ num }) => {
-  console.log('running');
-  onCleanup(() => {
-    console.log('cleaned');
-  });
-  return [
-    _tmpl$$3(),
-    (() => {
-      var _el$2 = _tmpl$2(),
-        _el$3 = _el$2.firstChild,
-        _el$5 = _el$3.nextSibling;
-      _el$5.nextSibling;
-      insert(_el$2, num, _el$5);
-      return _el$2;
-    })()
-  ];
-};
-var _tmpl$$2 = /* @__PURE__ */ template(
-  `<div><button>Add</button><button>Remove</button><br><span>what about now`
-);
-const ArrayTest = () => {
-  const [arr, setArr] = createSignal([1, 2, 3, 4]);
-  const add = () => {
-    setArr((prev) => [...prev, (prev[prev.length - 1] || 0) + 1]);
-  };
-  const remove = () => {
-    setArr((prev) => {
-      prev.pop();
-      return [...prev];
-    });
-  };
-  return (() => {
-    var _el$ = _tmpl$$2(),
-      _el$2 = _el$.firstChild,
-      _el$3 = _el$2.nextSibling,
-      _el$4 = _el$3.nextSibling;
-    _el$2.$$click = add;
-    _el$3.$$click = remove;
-    insert(
-      _el$,
-      () =>
-        arr().map((item) =>
-          createComponent(ArrayItem, {
-            num: item
-          })
-        ),
-      _el$4
-    );
-    return _el$;
-  })();
-};
-delegateEvents(['click']);
-var _tmpl$$1 = /* @__PURE__ */ template(`<div><span>here</span><button>test </button><button>click me`);
-const Comp = (_) => {
-  const [test, setTest] = createSignal(0);
-  const [bool, setBool] = createSignal(false);
-  const change = () => {
-    console.log('clicked');
-    setTest((prev) => prev + 1);
-  };
-  const another = () => {
-    setBool((prev) => !prev);
-  };
+var _tmpl$$1 = /* @__PURE__ */ template(`<div><span>`);
+const Comp = (props) => {
   return (() => {
     var _el$ = _tmpl$$1(),
-      _el$2 = _el$.firstChild,
-      _el$3 = _el$2.nextSibling;
-    _el$3.firstChild;
-    var _el$5 = _el$3.nextSibling;
-    _el$3.$$click = change;
-    insert(_el$3, test, null);
-    insert(
-      _el$,
-      (() => {
-        var _c$ = derived(() => !!(bool() && test() === 0));
-        return () => (_c$() ? createComponent(Another, {}) : 'epic');
-      })(),
-      _el$5
-    );
-    _el$5.$$click = another;
-    insert(_el$, createComponent(ArrayTest, {}), null);
+      _el$2 = _el$.firstChild;
+    insert(_el$2, () => props.num);
     return _el$;
   })();
 };
-delegateEvents(['click']);
-var _tmpl$ = /* @__PURE__ */ template(`<div>`);
+var _tmpl$ = /* @__PURE__ */ template(`<div><button>update`);
 const App = () => {
+  const [num, setNum] = createSignal(2);
+  const change = () => {
+    setNum((prev) => prev + 1);
+  };
   return (() => {
-    var _el$ = _tmpl$();
+    var _el$ = _tmpl$(),
+      _el$2 = _el$.firstChild;
+    _el$2.$$click = change;
     insert(
       _el$,
       createComponent(Comp, {
-        property: 'what',
-        children: 'sdlkfjsdl'
-      })
+        get num() {
+          return num();
+        }
+      }),
+      null
     );
     return _el$;
   })();
 };
 mount(createComponent(App, {}));
+delegateEvents(['click']);

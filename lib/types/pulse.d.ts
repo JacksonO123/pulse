@@ -14,5 +14,5 @@ declare global {
 }
 export declare const createComponent: <T extends JSX.DOMAttributes<JSX.Element>>(comp: JSX.Component<T>, props: T) => JSX.Element;
 export declare const template: (str: string, _: any, isSvg: boolean) => () => Node | undefined;
-export declare const insert: (parent: Element, accessor: Accessor<JSXElement> | Node, marker: Node | null, initial: any) => void;
+export declare const insert: (parent: Element, accessor: Accessor<JSXElement> | Node, marker: Node | null | undefined, initial: any) => void;
 export declare const delegateEvents: (events: string[], doc?: Document) => void;

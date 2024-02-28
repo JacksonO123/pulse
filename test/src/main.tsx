@@ -1,10 +1,29 @@
 import { mount } from '@jacksonotto/pulse';
-import Component from './Comp';
+import { createSignal } from '@jacksonotto/signals';
 
-const App = () => {
+export type CompProps = {
+  num: number;
+};
+
+const Comp = (props: CompProps) => {
   return (
     <div>
-      <Component property="what">sdlkfjsdl</Component>
+      <span>{props.num}</span>
+    </div>
+  );
+};
+
+const App = () => {
+  const [num, setNum] = createSignal(2);
+
+  const change = () => {
+    setNum((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      <button onClick={change}>update</button>
+      <Comp num={num()} />
     </div>
   );
 };

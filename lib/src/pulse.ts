@@ -58,7 +58,7 @@ export const template = (str: string, _: any, isSvg: boolean) => {
 export const insert = (
   parent: Element,
   accessor: Accessor<JSXElement> | Node,
-  marker: Node | null,
+  marker: Node | null = null,
   // i have no idea what this does
   initial: any
 ) => {
