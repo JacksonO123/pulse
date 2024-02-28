@@ -11,9 +11,6 @@ dependencies:
   '@jacksonotto/pulse':
     specifier: link:../lib
     version: link:../lib
-  '@jacksonotto/signals':
-    specifier: link:../../signals
-    version: link:../../signals
   babel-plugin-jsx-dom-expressions:
     specifier: ^0.37.17
     version: 0.37.17(@babel/core@7.23.9)
