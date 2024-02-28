@@ -24,6 +24,7 @@ const ArrayTest = () => {
         <ArrayItem num={item} />
       ))}
 
+      <br />
       <span>what about now</span>
     </div>
   );

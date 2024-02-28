@@ -11,7 +11,12 @@ const ArrayItem = ({ num }: ArrayItemProps) => {
     console.log('cleaned');
   });
 
-  return <span>has {num}</span>;
+  return (
+    <>
+      <br />
+      <span>[item {num}]</span>
+    </>
+  );
 };
 
 export default ArrayItem;

@@ -128,7 +128,11 @@ export const insert = (
       }
     });
   } else {
-    renderChild(parent, accessor);
+    if (marker) {
+      insertBefore(marker as Element, accessor);
+    } else {
+      renderChild(parent, accessor);
+    }
   }
 };
 

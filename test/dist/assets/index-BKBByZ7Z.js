@@ -407,21 +407,27 @@ var _tmpl$$4 = /* @__PURE__ */ template(`<span>in another component`);
 const Another = () => {
   return _tmpl$$4();
 };
-var _tmpl$$3 = /* @__PURE__ */ template(`<span>has `);
+var _tmpl$$3 = /* @__PURE__ */ template(`<br>`),
+  _tmpl$2 = /* @__PURE__ */ template(`<span>[item <!>]`);
 const ArrayItem = ({ num }) => {
   console.log('running');
   onCleanup(() => {
     console.log('cleaned');
   });
-  return (() => {
-    var _el$ = _tmpl$$3();
-    _el$.firstChild;
-    insert(_el$, num, null);
-    return _el$;
-  })();
+  return [
+    _tmpl$$3(),
+    (() => {
+      var _el$2 = _tmpl$2(),
+        _el$3 = _el$2.firstChild,
+        _el$5 = _el$3.nextSibling;
+      _el$5.nextSibling;
+      insert(_el$2, num, _el$5);
+      return _el$2;
+    })()
+  ];
 };
 var _tmpl$$2 = /* @__PURE__ */ template(
-  `<div><button>Add</button><button>Remove</button><span>what about now`
+  `<div><button>Add</button><button>Remove</button><br><span>what about now`
 );
 const ArrayTest = () => {
   const [arr, setArr] = createSignal([1, 2, 3, 4]);
