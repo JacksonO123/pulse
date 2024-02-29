@@ -5,7 +5,7 @@
   "types": "./types/index.d.ts",
   "description": "A lightweight JavaScript framework based on signals",
   "author": "Jackson Otto",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -29,7 +29,21 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "csstype": "^3.1.3",
-    "@jacksonotto/signals": "link:../../signals"
-  }
+    "@jacksonotto/signals": "^1.3.2",
+    "csstype": "^3.1.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacksonO123/pulse.git"
+  },
+  "keywords": [
+    "reactive",
+    "frontend",
+    "javascript",
+    "typescript",
+    "framework",
+    "jsx",
+    "signals",
+    "performance"
+  ]
 }
