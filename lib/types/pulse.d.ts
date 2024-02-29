@@ -3,7 +3,7 @@ import type { JSX } from './jsx.js';
 export type JSXElement = JSX.Element;
 export { JSX };
 export { mount } from './dom.js';
-export { derived as memo } from '@jacksonotto/signals';
+export { derived as memo, createEffect as effect } from '@jacksonotto/signals';
 declare global {
     interface Document {
         _$DX_DELEGATE?: Set<string>;

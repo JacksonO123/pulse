@@ -13,7 +13,7 @@ import { jsxElementToElement, renderChild, eventHandler, replaceElements, insert
 export type JSXElement = JSX.Element;
 export { JSX };
 export { mount } from './dom.js';
-export { derived as memo } from '@jacksonotto/signals';
+export { derived as memo, createEffect as effect } from '@jacksonotto/signals';
 
 const $$EVENTS = '_$DX_DELEGATE';
 
@@ -86,9 +86,9 @@ export const insert = (
       const cleanup = trackScope(() => {
         const value = accessor();
 
-        const current = currentContext();
-        if (current && !computed) {
-          innerOwned = current.getOwned();
+        if (!computed) {
+          const current = currentContext();
+          if (current) innerOwned = current.getOwned();
         }
 
         if (value === false || value === null || value === undefined) {

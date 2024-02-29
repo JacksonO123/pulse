@@ -5,4 +5,5 @@ export declare const jsxElementToElement: (jsxEl: JSXElement) => Node | Node[];
 export declare const insertAfter: (target: Element, el: JSXElement) => void;
 export declare const insertBefore: (target: Element, el: JSXElement) => void;
 export declare const replaceElements: (target: Node | Node[], el: Node | Node[], parent: Element, after: Node | null) => void;
+export declare const removeElementOrArr: (el: Node | Node[]) => void;
 export declare const eventHandler: (e: Event) => void;

@@ -70,18 +70,20 @@ class Context {
   constructor() {
     __publicField(this, 'owned');
     __publicField(this, 'disposeEvents');
-    this.owned = [];
+    this.owned = /* @__PURE__ */ new Set();
     this.disposeEvents = [];
   }
   own(state) {
-    this.owned.push(state);
+    this.owned.add(state);
   }
   ownMany(states) {
-    this.owned.push(...states);
+    states.forEach((state) => {
+      this.owned.add(state);
+    });
   }
   dispose() {
     this.runDisposeEvents();
-    this.owned = [];
+    this.owned.clear();
   }
   runDisposeEvents() {
     this.disposeEvents.forEach((event) => event());
@@ -103,7 +105,7 @@ class Context {
     this.owned.forEach((signal) => signal.removeEffect(fn));
   }
   getOwned() {
-    return this.owned;
+    return [...this.owned];
   }
 }
 class State {
@@ -268,34 +270,6 @@ const replaceElements = (target, el, parent, after) => {
     }
   }
 };
-const eventHandler = (e) => {
-  const key = `$$${e.type}`;
-  let node = (e.composedPath && e.composedPath()[0]) || e.target;
-  if (e.target !== node) {
-    Object.defineProperty(e, 'target', {
-      configurable: true,
-      value: node
-    });
-  }
-  Object.defineProperty(e, 'currentTarget', {
-    configurable: true,
-    get() {
-      return node || document;
-    }
-  });
-  while (node) {
-    const handler = node[key];
-    if (handler && !node.disabled) {
-      const data = node[`${key}Data`];
-      if (data !== void 0) handler(data, e);
-      else {
-        handler(e);
-      }
-    }
-    node = node.parentNode;
-  }
-};
-const $$EVENTS = '_$DX_DELEGATE';
 const createComponent = (comp, props) => {
   let res;
   const cleanup2 = trackScope(() => {
@@ -313,7 +287,7 @@ const template = (str, _, isSvg) => {
   const el = create();
   return () => (el == null ? void 0 : el.cloneNode(true));
 };
-const insert = (parent, accessor, marker, initial) => {
+const insert = (parent, accessor, marker = null, initial) => {
   if (initial) {
     console.log('HAS INITIAL', { parent, accessor, marker, initial });
   }
@@ -333,9 +307,9 @@ const insert = (parent, accessor, marker, initial) => {
       let innerOwned = [];
       const cleanup2 = trackScope(() => {
         const value = accessor();
-        const current = currentContext();
-        if (current && !computed) {
-          innerOwned = current.getOwned();
+        if (!computed) {
+          const current = currentContext();
+          if (current) innerOwned = current.getOwned();
         }
         if (value === false || value === null || value === void 0) {
           if (prevEl !== null) {
@@ -375,46 +349,13 @@ const insert = (parent, accessor, marker, initial) => {
     }
   }
 };
-const delegateEvents = (events, doc = document) => {
-  const e = doc[$$EVENTS] || (doc[$$EVENTS] = /* @__PURE__ */ new Set());
-  for (let i = 0; i < events.length; i++) {
-    const name = events[i];
-    if (!e.has(name)) {
-      e.add(name);
-      doc.addEventListener(name, eventHandler);
-    }
-  }
-};
-var _tmpl$$1 = /* @__PURE__ */ template(`<div><span>`);
-const Comp = (props) => {
+var _tmpl$ = /* @__PURE__ */ template(`<div>`);
+const Comp2 = () => {
+  const [value, _] = createSignal(true);
   return (() => {
-    var _el$ = _tmpl$$1(),
-      _el$2 = _el$.firstChild;
-    insert(_el$2, () => props.num);
+    var _el$ = _tmpl$();
+    insert(_el$, () => (value() ? [1, 2, 3, 4] : [1, 2]));
     return _el$;
   })();
 };
-var _tmpl$ = /* @__PURE__ */ template(`<div><button>update`);
-const App = () => {
-  const [num, setNum] = createSignal(2);
-  const change = () => {
-    setNum((prev) => prev + 1);
-  };
-  return (() => {
-    var _el$ = _tmpl$(),
-      _el$2 = _el$.firstChild;
-    _el$2.$$click = change;
-    insert(
-      _el$,
-      createComponent(Comp, {
-        get num() {
-          return num();
-        }
-      }),
-      null
-    );
-    return _el$;
-  })();
-};
-mount(createComponent(App, {}));
-delegateEvents(['click']);
+mount(createComponent(Comp2, {}));

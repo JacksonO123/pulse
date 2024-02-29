@@ -116,6 +116,11 @@ export const replaceElements = (
   }
 };
 
+export const removeElementOrArr = (el: Node | Node[]) => {
+  if (Array.isArray(el)) el.forEach((item) => removeElementOrArr(item));
+  else (el as Element).remove();
+};
+
 export const eventHandler = (e: Event) => {
   const key = `$$${e.type}`;
   let node: Node | null = ((e.composedPath && e.composedPath()[0]) || e.target) as Node;
