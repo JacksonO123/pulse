@@ -177,6 +177,28 @@ const createEffect = (fn) => {
   });
   onCleanup(cleanup2);
 };
+const derived = (fn) => {
+  const [value, setValue] = createSignal(null);
+  let prevCleanup = null;
+  let updateCleanup = void 0;
+  const handleDerived = () => {
+    if (prevCleanup) prevCleanup();
+    const cleanup2 = trackScope(() => {
+      setValue(fn());
+      const current = currentContext();
+      if (!current) return;
+      current.addEffect(handleDerived);
+      onCleanup(() => {
+        current.removeEffect(handleDerived);
+      });
+    });
+    prevCleanup = cleanup2;
+    updateCleanup == null ? void 0 : updateCleanup(cleanup2);
+  };
+  handleDerived();
+  updateCleanup = onCleanup(prevCleanup);
+  return value;
+};
 const renderChild = (parent, target) => {
   const element = jsxElementToElement(target);
   if (Array.isArray(element)) {
@@ -351,10 +373,16 @@ const insert = (parent, accessor, marker = null, initial) => {
 };
 var _tmpl$ = /* @__PURE__ */ template(`<div>`);
 const Comp2 = () => {
-  const [value, _] = createSignal(true);
+  const [test, _] = createSignal('word');
   return (() => {
     var _el$ = _tmpl$();
-    insert(_el$, () => (value() ? [1, 2, 3, 4] : [1, 2]));
+    insert(
+      _el$,
+      (() => {
+        var _c$ = derived(() => test().length > 0);
+        return () => (_c$() ? test() : 'no test');
+      })()
+    );
     return _el$;
   })();
 };

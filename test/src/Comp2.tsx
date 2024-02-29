@@ -1,9 +1,9 @@
 import { createSignal } from '@jacksonotto/pulse';
 
 const Comp2 = () => {
-  const [value, _] = createSignal(true);
+  const [test, _] = createSignal('word');
 
-  return <div>{value() ? [1, 2, 3, 4] : [1, 2]}</div>;
+  return <div>{test().length > 0 ? test() : 'no test'}</div>;
 };
 
 export default Comp2;

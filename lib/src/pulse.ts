@@ -5,7 +5,8 @@ import {
   onCleanup,
   currentContext,
   State,
-  Context
+  Context,
+  cleanupHandler
 } from '@jacksonotto/signals';
 import type { JSX } from './jsx.js';
 import { jsxElementToElement, renderChild, eventHandler, replaceElements, insertBefore } from './dom.js';
@@ -68,8 +69,7 @@ export const insert = (
 
   if (typeof accessor === 'function') {
     let prevEl: Node | Node[] | null = null;
-    let prevCleanup: (() => void) | null = null;
-    let updateCleanup: ((newFn: () => void) => void) | undefined = undefined;
+    const [prevCleanup, addCleanup] = cleanupHandler();
     let context: Context | null = null;
     let computed = false;
 
@@ -80,7 +80,8 @@ export const insert = (
         context = current;
       }
 
-      if (prevCleanup) prevCleanup();
+      prevCleanup();
+      // if (prevCleanup) prevCleanup();
       let innerOwned: State<any>[] = [];
 
       const cleanup = trackScope(() => {
@@ -119,13 +120,7 @@ export const insert = (
         computed = true;
       }
 
-      prevCleanup = cleanup;
-
-      if (updateCleanup) {
-        updateCleanup(cleanup);
-      } else {
-        updateCleanup = onCleanup(cleanup);
-      }
+      addCleanup(cleanup);
     });
   } else {
     if (marker) {

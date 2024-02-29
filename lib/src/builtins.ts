@@ -3,9 +3,9 @@ import { JSXElement, createEffect } from './index.js';
 import {
   Accessor,
   Setter,
+  cleanupHandler,
   createSignal,
   getSignalInternals,
-  onCleanup,
   trackScope
 } from '@jacksonotto/signals';
 
@@ -21,11 +21,10 @@ export const For = <T extends JSXElement>(props: ForProps<T>) => {
   let beforeEl: Node | null = null;
   let hookEl = new Text();
 
-  let prevCleanup: (() => void) | null = null;
-  let updateCleanup: ((newFn: () => void) => void) | undefined = undefined;
+  const [prevCleanup, addCleanup] = cleanupHandler();
 
   createEffect(() => {
-    if (prevCleanup) prevCleanup();
+    prevCleanup();
 
     const arr = props.each;
 
@@ -52,13 +51,7 @@ export const For = <T extends JSXElement>(props: ForProps<T>) => {
       }
     });
 
-    prevCleanup = cleanup;
-
-    if (updateCleanup) {
-      updateCleanup(cleanup);
-    } else {
-      updateCleanup = onCleanup(cleanup);
-    }
+    addCleanup(cleanup);
 
     while (info.length < arr.length) {
       const index = info.length;
