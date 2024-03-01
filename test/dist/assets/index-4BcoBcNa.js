@@ -177,27 +177,35 @@ const createEffect = (fn) => {
   });
   onCleanup(cleanup2);
 };
-const derived = (fn) => {
-  const [value, setValue] = createSignal(null);
-  let prevCleanup = null;
+const cleanupHandler = () => {
+  let cleanup2 = null;
   let updateCleanup = void 0;
-  const handleDerived = () => {
-    if (prevCleanup) prevCleanup();
-    const cleanup2 = trackScope(() => {
-      setValue(fn());
-      const current = currentContext();
-      if (!current) return;
-      current.addEffect(handleDerived);
-      onCleanup(() => {
-        current.removeEffect(handleDerived);
-      });
-    });
-    prevCleanup = cleanup2;
-    updateCleanup == null ? void 0 : updateCleanup(cleanup2);
-  };
-  handleDerived();
-  updateCleanup = onCleanup(prevCleanup);
-  return value;
+  return [
+    () => (cleanup2 == null ? void 0 : cleanup2()),
+    (newCleanup) => {
+      if (updateCleanup) {
+        updateCleanup(newCleanup);
+      } else {
+        updateCleanup = onCleanup(newCleanup);
+      }
+      cleanup2 = newCleanup;
+    }
+  ];
+};
+const getSignalInternals = (fn) => {
+  let res = null;
+  const cleanup2 = trackScope(() => {
+    fn();
+    const current = currentContext();
+    if (!current) return;
+    const owned = current.getOwned();
+    if (owned.length === 0) {
+      throw new Error('Error finding internals, no signal detected');
+    }
+    res = current.getOwned()[0];
+  });
+  cleanup2();
+  return res;
 };
 const renderChild = (parent, target) => {
   const element = jsxElementToElement(target);
@@ -292,6 +300,38 @@ const replaceElements = (target, el, parent, after) => {
     }
   }
 };
+const removeElementOrArr = (el) => {
+  if (Array.isArray(el)) el.forEach((item) => removeElementOrArr(item));
+  else el.remove();
+};
+const eventHandler = (e) => {
+  const key = `$$${e.type}`;
+  let node = (e.composedPath && e.composedPath()[0]) || e.target;
+  if (e.target !== node) {
+    Object.defineProperty(e, 'target', {
+      configurable: true,
+      value: node
+    });
+  }
+  Object.defineProperty(e, 'currentTarget', {
+    configurable: true,
+    get() {
+      return node || document;
+    }
+  });
+  while (node) {
+    const handler = node[key];
+    if (handler && !node.disabled) {
+      const data = node[`${key}Data`];
+      if (data !== void 0) handler(data, e);
+      else {
+        handler(e);
+      }
+    }
+    node = node.parentNode;
+  }
+};
+const $$EVENTS = '_$DX_DELEGATE';
 const createComponent = (comp, props) => {
   let res;
   const cleanup2 = trackScope(() => {
@@ -315,8 +355,7 @@ const insert = (parent, accessor, marker = null, initial) => {
   }
   if (typeof accessor === 'function') {
     let prevEl = null;
-    let prevCleanup = null;
-    let updateCleanup = void 0;
+    const [prevCleanup, addCleanup] = cleanupHandler();
     let context = null;
     let computed = false;
     createEffect(() => {
@@ -325,7 +364,7 @@ const insert = (parent, accessor, marker = null, initial) => {
         if (!current) return;
         context = current;
       }
-      if (prevCleanup) prevCleanup();
+      prevCleanup();
       let innerOwned = [];
       const cleanup2 = trackScope(() => {
         const value = accessor();
@@ -356,12 +395,7 @@ const insert = (parent, accessor, marker = null, initial) => {
         context.ownMany(innerOwned);
         computed = true;
       }
-      prevCleanup = cleanup2;
-      if (updateCleanup) {
-        updateCleanup(cleanup2);
-      } else {
-        updateCleanup = onCleanup(cleanup2);
-      }
+      addCleanup(cleanup2);
     });
   } else {
     if (marker) {
@@ -371,19 +405,130 @@ const insert = (parent, accessor, marker = null, initial) => {
     }
   }
 };
-var _tmpl$ = /* @__PURE__ */ template(`<div>`);
-const Comp2 = () => {
-  const [test, _] = createSignal('word');
+const delegateEvents = (events, doc = document) => {
+  const e = doc[$$EVENTS] || (doc[$$EVENTS] = /* @__PURE__ */ new Set());
+  for (let i = 0; i < events.length; i++) {
+    const name = events[i];
+    if (!e.has(name)) {
+      e.add(name);
+      doc.addEventListener(name, eventHandler);
+    }
+  }
+};
+const For = (props) => {
+  const info = [];
+  let parent = null;
+  let beforeEl = null;
+  let hookEl = new Text();
+  const [prevCleanup, addCleanup] = cleanupHandler();
+  createEffect(() => {
+    prevCleanup();
+    const arr = props.each;
+    if (!beforeEl && !parent) {
+      let hookInstance;
+      if (info.length === 0) {
+        hookInstance = hookEl;
+      } else {
+        const el = info[0][2];
+        hookInstance = Array.isArray(el) ? el.flat()[0] : el;
+      }
+      const hookBefore = hookInstance.previousSibling;
+      if (hookBefore) beforeEl = hookBefore;
+      parent = hookInstance.parentNode;
+    }
+    const cleanup2 = trackScope(() => {
+      for (let i = 0; i < Math.min(info.length, arr.length); i++) {
+        if (info[i][0]() !== arr[i]) {
+          info[i][1](arr[i]);
+        }
+      }
+    });
+    addCleanup(cleanup2);
+    while (info.length < arr.length) {
+      const index = info.length;
+      const item = arr[index];
+      const [value, setValue] = createSignal(item);
+      const jsxEl = props.children(value, index);
+      const el = jsxElementToElement(jsxEl);
+      info.push([value, setValue, el]);
+      if (!parent && !beforeEl) continue;
+      if (info.length - 1 === 0) {
+        if (beforeEl) {
+          insertAfter(beforeEl, el);
+        } else {
+          renderChild(parent, el);
+        }
+      } else {
+        let beforeItem = info[index - 1][2];
+        beforeItem = Array.isArray(beforeItem) ? beforeItem[beforeItem.length - 1] : beforeItem;
+        insertAfter(beforeItem, el);
+      }
+    }
+    while (info.length > arr.length) {
+      const indexInfo = info.pop();
+      const internals = getSignalInternals(indexInfo[0]);
+      internals.dispose();
+      removeElementOrArr(indexInfo[2]);
+    }
+  });
+  if (info.length === 0) return hookEl;
+  return info.map((item) => item[2]);
+};
+var _tmpl$ = /* @__PURE__ */ template(`<span>`),
+  _tmpl$2 = /* @__PURE__ */ template(`<div><div><button>Add</button><button>Remove`),
+  _tmpl$3 = /* @__PURE__ */ template(`<br>`);
+const ArrayItem = (props) => {
+  const [rendered, setRendered] = createSignal(false);
+  const timeout = setTimeout(() => {
+    setRendered(true);
+  });
+  onCleanup(() => clearTimeout(timeout));
   return (() => {
     var _el$ = _tmpl$();
-    insert(
-      _el$,
-      (() => {
-        var _c$ = derived(() => test().length > 0);
-        return () => (_c$() ? test() : 'no test');
-      })()
-    );
+    insert(_el$, () => rendered() && '(', null);
+    insert(_el$, () => props.children, null);
+    insert(_el$, () => rendered() && ')', null);
     return _el$;
   })();
 };
+const Comp2 = () => {
+  const [arr, setArr] = createSignal([0]);
+  const add = () => {
+    setArr((prev) => {
+      let newArr = prev.map((item) => item + 1);
+      newArr = [...newArr, newArr.length > 0 ? newArr[newArr.length - 1] + 1 : 0];
+      return newArr;
+    });
+  };
+  const remove = () => {
+    setArr((prev) => (prev.pop(), [...prev]));
+  };
+  return (() => {
+    var _el$2 = _tmpl$2(),
+      _el$3 = _el$2.firstChild,
+      _el$4 = _el$3.firstChild,
+      _el$5 = _el$4.nextSibling;
+    _el$4.$$click = add;
+    _el$5.$$click = remove;
+    insert(
+      _el$2,
+      createComponent(For, {
+        get each() {
+          return arr();
+        },
+        children: (item) => [
+          createComponent(ArrayItem, {
+            get children() {
+              return item();
+            }
+          }),
+          _tmpl$3()
+        ]
+      }),
+      null
+    );
+    return _el$2;
+  })();
+};
+delegateEvents(['click']);
 mount(createComponent(Comp2, {}));

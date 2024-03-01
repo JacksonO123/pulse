@@ -45,9 +45,7 @@ export const For = <T extends JSXElement>(props: ForProps<T>) => {
 
     const cleanup = trackScope(() => {
       for (let i = 0; i < Math.min(info.length, arr.length); i++) {
-        if (info[i][0]() !== arr[i]) {
-          info[i][1](arr[i]);
-        }
+        if (info[i][0]() !== arr[i]) info[i][1](arr[i]);
       }
     });
 

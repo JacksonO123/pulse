@@ -81,11 +81,10 @@ export const insert = (
       }
 
       prevCleanup();
-      // if (prevCleanup) prevCleanup();
       let innerOwned: State<any>[] = [];
 
       const cleanup = trackScope(() => {
-        const value = accessor();
+        let value = accessor();
 
         if (!computed) {
           const current = currentContext();
@@ -94,10 +93,13 @@ export const insert = (
 
         if (value === false || value === null || value === undefined) {
           if (prevEl !== null) {
-            (prevEl as Element).remove();
-            prevEl = null;
+            const text = new Text();
+            (prevEl as Element).replaceWith(text);
+            prevEl = text;
+            return;
+          } else {
+            value = '';
           }
-          return;
         }
 
         const el = jsxElementToElement(value);
