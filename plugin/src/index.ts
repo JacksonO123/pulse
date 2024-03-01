@@ -1,8 +1,8 @@
-import { PluginOption } from 'vite';
-import { transformAsync, TransformOptions } from '@babel/core';
-import { mergeAndConcat } from 'merge-anything';
+import { PluginOption } from "vite";
+import { transformAsync, TransformOptions } from "@babel/core";
+import { mergeAndConcat } from "merge-anything";
 // @ts-ignore
-import jsxTransform from 'babel-plugin-jsx-dom-expressions';
+import jsxTransform from "babel-plugin-jsx-dom-expressions";
 
 export interface Options {
   ssr: boolean;
@@ -26,7 +26,7 @@ export interface Options {
     /**
      * @default "dom"
      */
-    generate?: 'ssr' | 'dom';
+    generate?: "ssr" | "dom";
 
     /**
      * @default false
@@ -55,34 +55,34 @@ export interface Options {
   };
 }
 
-function pulsePreset(context: any, options = {}) {
+function pulsePreset(_: any, options = {}) {
   const plugins = [
     [
       jsxTransform,
       {
-        moduleName: '@jacksonotto/pulse',
+        moduleName: "@jacksonotto/pulse",
         builtIns: [
-          'For',
-          'Show',
-          'Switch',
-          'Match',
-          'Suspense',
-          'SuspenseList',
-          'Portal',
-          'Index',
-          'Dynamic',
-          'ErrorBoundary'
+          "For",
+          "Show",
+          "Switch",
+          "Match",
+          "Suspense",
+          "SuspenseList",
+          "Portal",
+          "Index",
+          "Dynamic",
+          "ErrorBoundary",
         ],
         contextToCustomElements: true,
         wrapConditionals: true,
-        generate: 'dom',
-        ...options
-      }
-    ]
+        generate: "dom",
+        ...options,
+      },
+    ],
   ];
 
   return {
-    plugins
+    plugins,
   };
 }
 
@@ -90,8 +90,8 @@ export default function plugin(options: Partial<Options> = {}) {
   let projectRoot = process.cwd();
 
   return {
-    name: 'pulse',
-    enforce: 'pre',
+    name: "pulse",
+    enforce: "pre",
 
     config(userConfig) {
       if (userConfig.root) projectRoot = userConfig.root;
@@ -102,20 +102,22 @@ export default function plugin(options: Partial<Options> = {}) {
 
       if (!/\.[mc]?[tj]sx$/i.test(id)) return null;
 
-      const plugins: NonNullable<NonNullable<babel.TransformOptions['parserOpts']>['plugins']> = ['jsx'];
+      const plugins: NonNullable<
+        NonNullable<babel.TransformOptions["parserOpts"]>["plugins"]
+      > = ["jsx"];
 
-      if (id.endsWith('.tsx')) plugins.push('typescript');
+      if (id.endsWith(".tsx")) plugins.push("typescript");
 
-      let domOptions: { generate: 'ssr' | 'dom'; hydratable: boolean };
+      let domOptions: { generate: "ssr" | "dom"; hydratable: boolean };
 
       if (options.ssr) {
         if (isSsr) {
-          domOptions = { generate: 'ssr', hydratable: true };
+          domOptions = { generate: "ssr", hydratable: true };
         } else {
-          domOptions = { generate: 'dom', hydratable: true };
+          domOptions = { generate: "dom", hydratable: true };
         }
       } else {
-        domOptions = { generate: 'dom', hydratable: false };
+        domOptions = { generate: "dom", hydratable: false };
       }
 
       const config: TransformOptions = {
@@ -128,16 +130,17 @@ export default function plugin(options: Partial<Options> = {}) {
         configFile: false,
         babelrc: false,
         parserOpts: {
-          plugins
-        }
+          plugins,
+        },
       };
 
       let userOptions: babel.TransformOptions = {};
 
       if (options.babel) {
-        if (typeof options.babel === 'function') {
+        if (typeof options.babel === "function") {
           const babelOptions = options.babel(source, id);
-          userOptions = babelOptions instanceof Promise ? await babelOptions : babelOptions;
+          userOptions =
+            babelOptions instanceof Promise ? await babelOptions : babelOptions;
         } else {
           userOptions = options.babel;
         }
@@ -148,6 +151,6 @@ export default function plugin(options: Partial<Options> = {}) {
       const { code, map } = (await transformAsync(source, babelOptions))!;
 
       return { code, map };
-    }
+    },
   } as PluginOption;
 }

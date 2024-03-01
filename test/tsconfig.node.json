@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "lib": [ // remove
+    "lib": [
+      // remove
       "ES2020"
     ],
     "composite": true,
@@ -10,8 +11,5 @@
     "allowSyntheticDefaultImports": true,
     "strict": true
   },
-  "include": [
-    "vite.config.ts",
-    "plugin.ts"
-  ]
+  "include": ["vite.config.ts"]
 }

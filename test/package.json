@@ -6,15 +6,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babel/core": "^7.23.9",
     "@jacksonotto/pulse": "link:../lib",
-    "babel-plugin-jsx-dom-expressions": "^0.37.17",
-    "merge-anything": "^5.1.7",
-    "vite": "^5.1.4",
-    "vite-plugin-babel": "^1.2.0"
-  },
-  "devDependencies": {
-    "@types/babel__core": "^7.20.5",
-    "@types/node": "^20.11.20"
+    "@jacksonotto/vite-plugin-pulse": "link:../plugin",
+    "vite": "^5.1.4"
   }
 }

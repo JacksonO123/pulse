@@ -367,17 +367,20 @@ const insert = (parent, accessor, marker = null, initial) => {
       prevCleanup();
       let innerOwned = [];
       const cleanup2 = trackScope(() => {
-        const value = accessor();
+        let value = accessor();
         if (!computed) {
           const current = currentContext();
           if (current) innerOwned = current.getOwned();
         }
         if (value === false || value === null || value === void 0) {
           if (prevEl !== null) {
-            prevEl.remove();
-            prevEl = null;
+            const text = new Text();
+            prevEl.replaceWith(text);
+            prevEl = text;
+            return;
+          } else {
+            value = '';
           }
-          return;
         }
         const el = jsxElementToElement(value);
         if (prevEl === null) {
@@ -438,9 +441,7 @@ const For = (props) => {
     }
     const cleanup2 = trackScope(() => {
       for (let i = 0; i < Math.min(info.length, arr.length); i++) {
-        if (info[i][0]() !== arr[i]) {
-          info[i][1](arr[i]);
-        }
+        if (info[i][0]() !== arr[i]) info[i][1](arr[i]);
       }
     });
     addCleanup(cleanup2);
@@ -481,7 +482,7 @@ const ArrayItem = (props) => {
   const [rendered, setRendered] = createSignal(false);
   const timeout = setTimeout(() => {
     setRendered(true);
-  });
+  }, 800);
   onCleanup(() => clearTimeout(timeout));
   return (() => {
     var _el$ = _tmpl$();
