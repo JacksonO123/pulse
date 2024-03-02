@@ -17,4 +17,5 @@ export declare const template: (str: string, _: any, isSvg: boolean) => () => No
 export declare const insert: (parent: Element, accessor: Accessor<JSXElement> | Node, marker: Node | null | undefined, initial: any) => void;
 export declare const onMount: (cb: () => void) => void;
 export declare const style: (el: HTMLElement, style: JSX.CSSProperties) => void;
+export declare const className: (el: Element, classStr: string) => void;
 export declare const delegateEvents: (events: string[], doc?: Document) => void;

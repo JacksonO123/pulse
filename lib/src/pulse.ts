@@ -153,6 +153,11 @@ export const style = (el: HTMLElement, style: JSX.CSSProperties) => {
   });
 };
 
+export const className = (el: Element, classStr: string) => {
+  const classes = classStr.split(' ');
+  classes.forEach((item) => el.classList.add(item));
+};
+
 export const delegateEvents = (events: string[], doc = document) => {
   const e = doc[$$EVENTS] || (doc[$$EVENTS] = new Set());
   for (let i = 0; i < events.length; i++) {
