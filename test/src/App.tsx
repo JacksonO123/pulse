@@ -1,70 +1,31 @@
-import { Accessor, For, createEffect, createSignal } from '@jacksonotto/pulse';
-
-const ArrayItem = () => {
-  const [value, setValue] = createSignal(3);
-
-  setTimeout(() => {
-    setValue(4);
-  }, 500);
-
-  return <span>{Array(value()).fill('a')}</span>;
-};
-
-type ArrayCompProp = {
-  length: number;
-};
-
-const ArrayComp = (props: ArrayCompProp) => {
-  const arr: Accessor<number[]> = () =>
-    Array(props.length)
-      .fill(0)
-      .map((_, index) => index);
-
-  createEffect(() => {
-    console.log(arr());
-  });
-
-  return (
-    <div>
-      <For each={arr()}>
-        {() => (
-          <>
-            <ArrayItem />
-            <br />
-          </>
-        )}
-      </For>
-      {/* {Array(props.length) */}
-      {/*   .fill(0) */}
-      {/*   .map(() => ( */}
-      {/*     <div> */}
-      {/*       <ArrayItem /> */}
-      {/*     </div> */}
-      {/*   ))} */}
-    </div>
-  );
-};
+import { createSignal } from '@jacksonotto/pulse';
+import './App.css';
+import Pulse from './Pulse';
 
 const App = () => {
-  const [len, setLen] = createSignal(2);
+  const [count, setCount] = createSignal(0);
 
   const add = () => {
-    setLen((prev) => prev + 1);
-    console.log('-');
-  };
-
-  const remove = () => {
-    setLen((prev) => Math.max(prev - 1, 0));
-    console.log('-');
+    setCount((prev) => prev + 1);
   };
 
   return (
-    <div>
-      <div>
-        <button onClick={add}>Add</button>
-        <button onClick={remove}>Remove</button>
-      </div>
-      <ArrayComp length={len()} />
+    <div class="container">
+      <Pulse
+        outerStyle={{ width: '100%', height: '100%' }}
+        innerStyle={{
+          padding: '20px',
+          'padding-top': '35px',
+          'padding-bottom': '35px',
+          display: 'flex',
+          'flex-direction': 'column',
+          'align-items': 'center',
+          gap: '14px'
+        }}
+      >
+        <h1>Pulse</h1>
+        <button onClick={add}>Count {count()}</button>
+      </Pulse>
     </div>
   );
 };

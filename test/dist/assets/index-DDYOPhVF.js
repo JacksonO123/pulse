@@ -1,15 +1,12 @@
 var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) =>
-  key in obj
-    ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value })
-    : (obj[key] = value);
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== 'symbol' ? key + '' : key, value);
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 (function polyfill() {
-  const relList = document.createElement('link').relList;
-  if (relList && relList.supports && relList.supports('modulepreload')) {
+  const relList = document.createElement("link").relList;
+  if (relList && relList.supports && relList.supports("modulepreload")) {
     return;
   }
   for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
@@ -17,25 +14,32 @@ var __publicField = (obj, key, value) => {
   }
   new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type !== 'childList') {
+      if (mutation.type !== "childList") {
         continue;
       }
       for (const node of mutation.addedNodes) {
-        if (node.tagName === 'LINK' && node.rel === 'modulepreload') processPreload(node);
+        if (node.tagName === "LINK" && node.rel === "modulepreload")
+          processPreload(node);
       }
     }
   }).observe(document, { childList: true, subtree: true });
   function getFetchOpts(link) {
     const fetchOpts = {};
-    if (link.integrity) fetchOpts.integrity = link.integrity;
-    if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
-    if (link.crossOrigin === 'use-credentials') fetchOpts.credentials = 'include';
-    else if (link.crossOrigin === 'anonymous') fetchOpts.credentials = 'omit';
-    else fetchOpts.credentials = 'same-origin';
+    if (link.integrity)
+      fetchOpts.integrity = link.integrity;
+    if (link.referrerPolicy)
+      fetchOpts.referrerPolicy = link.referrerPolicy;
+    if (link.crossOrigin === "use-credentials")
+      fetchOpts.credentials = "include";
+    else if (link.crossOrigin === "anonymous")
+      fetchOpts.credentials = "omit";
+    else
+      fetchOpts.credentials = "same-origin";
     return fetchOpts;
   }
   function processPreload(link) {
-    if (link.ep) return;
+    if (link.ep)
+      return;
     link.ep = true;
     const fetchOpts = getFetchOpts(link);
     fetch(link.href, fetchOpts);
@@ -43,7 +47,7 @@ var __publicField = (obj, key, value) => {
 })();
 class Owner {
   constructor() {
-    __publicField(this, 'contexts');
+    __publicField(this, "contexts");
     this.contexts = [];
   }
   currentContext() {
@@ -63,13 +67,14 @@ const owner = new Owner();
 const currentContext = () => owner.currentContext();
 const track = (state) => {
   const current = currentContext();
-  if (!current) return;
+  if (!current)
+    return;
   current.own(state);
 };
 class Context {
   constructor() {
-    __publicField(this, 'owned');
-    __publicField(this, 'disposeEvents');
+    __publicField(this, "owned");
+    __publicField(this, "disposeEvents");
     this.owned = /* @__PURE__ */ new Set();
     this.disposeEvents = [];
   }
@@ -110,8 +115,8 @@ class Context {
 }
 class State {
   constructor(state) {
-    __publicField(this, 'effects');
-    __publicField(this, 'value');
+    __publicField(this, "effects");
+    __publicField(this, "value");
     this.value = state;
     this.effects = [];
   }
@@ -155,21 +160,23 @@ const cleanup = (context) => {
 };
 const onCleanup = (fn) => {
   const context = currentContext();
-  if (!context) return;
+  if (!context)
+    return;
   return context.onDispose(fn);
 };
 const createSignal = (value) => {
   const current = new State(value);
   return [
     () => current.read(),
-    (value2) => current.write(typeof value2 === 'function' ? value2(current._read()) : value2)
+    (value2) => current.write(typeof value2 === "function" ? value2(current._read()) : value2)
   ];
 };
-const createEffect = (fn) => {
+const createEffect$1 = (fn) => {
   const cleanup2 = trackScope(() => {
     fn();
     const current = currentContext();
-    if (!current) return;
+    if (!current)
+      return;
     current.addEffect(fn);
     onCleanup(() => {
       current.removeEffect(fn);
@@ -181,7 +188,7 @@ const cleanupHandler = () => {
   let cleanup2 = null;
   let updateCleanup = void 0;
   return [
-    () => (cleanup2 == null ? void 0 : cleanup2()),
+    () => cleanup2 == null ? void 0 : cleanup2(),
     (newCleanup) => {
       if (updateCleanup) {
         updateCleanup(newCleanup);
@@ -191,21 +198,6 @@ const cleanupHandler = () => {
       cleanup2 = newCleanup;
     }
   ];
-};
-const getSignalInternals = (fn) => {
-  let res = null;
-  const cleanup2 = trackScope(() => {
-    fn();
-    const current = currentContext();
-    if (!current) return;
-    const owned = current.getOwned();
-    if (owned.length === 0) {
-      throw new Error('Error finding internals, no signal detected');
-    }
-    res = current.getOwned()[0];
-  });
-  cleanup2();
-  return res;
 };
 const renderChild = (parent, target) => {
   const element = jsxElementToElement(target);
@@ -221,11 +213,12 @@ const mount = (comp, root = document.body) => {
   });
 };
 const jsxElementToElement = (jsxEl) => {
-  if (jsxEl instanceof Node) return jsxEl;
+  if (jsxEl instanceof Node)
+    return jsxEl;
   if (Array.isArray(jsxEl)) {
     return jsxEl.map((el) => jsxElementToElement(el)).flat();
   }
-  return new Text(jsxEl + '');
+  return new Text(jsxEl + "");
 };
 const insertAfter = (target, el) => {
   const element = jsxElementToElement(el);
@@ -255,9 +248,10 @@ const replaceElements = (target, el, parent, after) => {
   if (Array.isArray(target)) {
     if (Array.isArray(el)) {
       if (target.length === 0) {
-        if (after) insertBefore(after, el);
+        if (after)
+          insertBefore(after, el);
         else {
-          console.log('here');
+          console.log("here");
           renderChild(parent, el);
         }
         return;
@@ -276,8 +270,10 @@ const replaceElements = (target, el, parent, after) => {
       }
     } else {
       if (target.length === 0) {
-        if (after) insertBefore(after, el);
-        else renderChild(parent, el);
+        if (after)
+          insertBefore(after, el);
+        else
+          renderChild(parent, el);
         return;
       }
       while (target.length > 1) {
@@ -300,20 +296,16 @@ const replaceElements = (target, el, parent, after) => {
     }
   }
 };
-const removeElementOrArr = (el) => {
-  if (Array.isArray(el)) el.forEach((item) => removeElementOrArr(item));
-  else el.remove();
-};
 const eventHandler = (e) => {
   const key = `$$${e.type}`;
-  let node = (e.composedPath && e.composedPath()[0]) || e.target;
+  let node = e.composedPath && e.composedPath()[0] || e.target;
   if (e.target !== node) {
-    Object.defineProperty(e, 'target', {
+    Object.defineProperty(e, "target", {
       configurable: true,
       value: node
     });
   }
-  Object.defineProperty(e, 'currentTarget', {
+  Object.defineProperty(e, "currentTarget", {
     configurable: true,
     get() {
       return node || document;
@@ -323,7 +315,8 @@ const eventHandler = (e) => {
     const handler = node[key];
     if (handler && !node.disabled) {
       const data = node[`${key}Data`];
-      if (data !== void 0) handler(data, e);
+      if (data !== void 0)
+        handler(data, e);
       else {
         handler(e);
       }
@@ -331,37 +324,44 @@ const eventHandler = (e) => {
     node = node.parentNode;
   }
 };
-const $$EVENTS = '_$DX_DELEGATE';
+const $$EVENTS = "_$DX_DELEGATE";
+let mountEvents = [];
 const createComponent = (comp, props) => {
+  const startLen = mountEvents.length;
   let res;
   const cleanup2 = trackScope(() => {
     res = comp(props);
   });
+  while (mountEvents.length > startLen) {
+    const currentEvent = mountEvents.pop();
+    currentEvent == null ? void 0 : currentEvent();
+  }
   onCleanup(cleanup2);
   return res;
 };
 const template = (str, _, isSvg) => {
   const create = () => {
-    const el2 = document.createElement('template');
+    const el2 = document.createElement("template");
     el2.innerHTML = str;
     return isSvg ? el2.content.firstChild.firstChild : el2.content.firstChild;
   };
   const el = create();
-  return () => (el == null ? void 0 : el.cloneNode(true));
+  return () => el == null ? void 0 : el.cloneNode(true);
 };
 const insert = (parent, accessor, marker = null, initial) => {
   if (initial) {
-    console.log('HAS INITIAL', { parent, accessor, marker, initial });
+    console.log("HAS INITIAL", { parent, accessor, marker, initial });
   }
-  if (typeof accessor === 'function') {
+  if (typeof accessor === "function") {
     let prevEl = null;
     const [prevCleanup, addCleanup] = cleanupHandler();
     let context = null;
     let computed = false;
-    createEffect(() => {
+    createEffect$1(() => {
       if (!context) {
         const current = currentContext();
-        if (!current) return;
+        if (!current)
+          return;
         context = current;
       }
       prevCleanup();
@@ -370,7 +370,8 @@ const insert = (parent, accessor, marker = null, initial) => {
         let value = accessor();
         if (!computed) {
           const current = currentContext();
-          if (current) innerOwned = current.getOwned();
+          if (current)
+            innerOwned = current.getOwned();
         }
         if (value === false || value === null || value === void 0) {
           if (prevEl !== null) {
@@ -379,7 +380,7 @@ const insert = (parent, accessor, marker = null, initial) => {
             prevEl = text;
             return;
           } else {
-            value = '';
+            value = "";
           }
         }
         const el = jsxElementToElement(value);
@@ -408,6 +409,11 @@ const insert = (parent, accessor, marker = null, initial) => {
     }
   }
 };
+const style = (el, style2) => {
+  Object.entries(style2).forEach(([key, value]) => {
+    el.style[key] = value;
+  });
+};
 const delegateEvents = (events, doc = document) => {
   const e = doc[$$EVENTS] || (doc[$$EVENTS] = /* @__PURE__ */ new Set());
   for (let i = 0; i < events.length; i++) {
@@ -418,118 +424,56 @@ const delegateEvents = (events, doc = document) => {
     }
   }
 };
-const For = (props) => {
-  const info = [];
-  let parent = null;
-  let beforeEl = null;
-  let hookEl = new Text();
-  const [prevCleanup, addCleanup] = cleanupHandler();
-  createEffect(() => {
-    prevCleanup();
-    const arr = props.each;
-    if (!beforeEl && !parent) {
-      let hookInstance;
-      if (info.length === 0) {
-        hookInstance = hookEl;
-      } else {
-        const el = info[0][2];
-        hookInstance = Array.isArray(el) ? el.flat()[0] : el;
-      }
-      const hookBefore = hookInstance.previousSibling;
-      if (hookBefore) beforeEl = hookBefore;
-      parent = hookInstance.parentNode;
-    }
-    const cleanup2 = trackScope(() => {
-      for (let i = 0; i < Math.min(info.length, arr.length); i++) {
-        if (info[i][0]() !== arr[i]) info[i][1](arr[i]);
-      }
-    });
-    addCleanup(cleanup2);
-    while (info.length < arr.length) {
-      const index = info.length;
-      const item = arr[index];
-      const [value, setValue] = createSignal(item);
-      const jsxEl = props.children(value, index);
-      const el = jsxElementToElement(jsxEl);
-      info.push([value, setValue, el]);
-      if (!parent && !beforeEl) continue;
-      if (info.length - 1 === 0) {
-        if (beforeEl) {
-          insertAfter(beforeEl, el);
-        } else {
-          renderChild(parent, el);
-        }
-      } else {
-        let beforeItem = info[index - 1][2];
-        beforeItem = Array.isArray(beforeItem) ? beforeItem[beforeItem.length - 1] : beforeItem;
-        insertAfter(beforeItem, el);
-      }
-    }
-    while (info.length > arr.length) {
-      const indexInfo = info.pop();
-      const internals = getSignalInternals(indexInfo[0]);
-      internals.dispose();
-      removeElementOrArr(indexInfo[2]);
-    }
-  });
-  if (info.length === 0) return hookEl;
-  return info.map((item) => item[2]);
+const createEffect = (fn) => {
+  const cb = () => fn({});
+  createEffect$1(cb);
 };
-var _tmpl$ = /* @__PURE__ */ template(`<span>`),
-  _tmpl$2 = /* @__PURE__ */ template(`<div><div><button>Add</button><button>Remove`),
-  _tmpl$3 = /* @__PURE__ */ template(`<br>`);
-const ArrayItem = (props) => {
-  const [rendered, setRendered] = createSignal(false);
-  const timeout = setTimeout(() => {
-    setRendered(true);
-  }, 800);
-  onCleanup(() => clearTimeout(timeout));
+var _tmpl$$1 = /* @__PURE__ */ template(`<div class=outer><div class=inner>`);
+const Pulse = (props) => {
   return (() => {
-    var _el$ = _tmpl$();
-    insert(_el$, () => rendered() && '(', null);
-    insert(_el$, () => props.children, null);
-    insert(_el$, () => rendered() && ')', null);
+    var _el$ = _tmpl$$1(), _el$2 = _el$.firstChild;
+    insert(_el$2, () => props.children);
+    createEffect((_p$) => {
+      var _v$ = props.outerStyle, _v$2 = props.innerStyle;
+      _p$.e = style(_el$, _v$, _p$.e);
+      _p$.t = style(_el$2, _v$2, _p$.t);
+      return _p$;
+    });
     return _el$;
   })();
 };
-const Comp2 = () => {
-  const [arr, setArr] = createSignal([0]);
+var _tmpl$ = /* @__PURE__ */ template(`<h1>Pulse`), _tmpl$2 = /* @__PURE__ */ template(`<button>Count `), _tmpl$3 = /* @__PURE__ */ template(`<div class=container>`);
+const App = () => {
+  const [count, setCount] = createSignal(0);
   const add = () => {
-    setArr((prev) => {
-      let newArr = prev.map((item) => item + 1);
-      newArr = [...newArr, newArr.length > 0 ? newArr[newArr.length - 1] + 1 : 0];
-      return newArr;
-    });
-  };
-  const remove = () => {
-    setArr((prev) => (prev.pop(), [...prev]));
+    setCount((prev) => prev + 1);
   };
   return (() => {
-    var _el$2 = _tmpl$2(),
-      _el$3 = _el$2.firstChild,
-      _el$4 = _el$3.firstChild,
-      _el$5 = _el$4.nextSibling;
-    _el$4.$$click = add;
-    _el$5.$$click = remove;
-    insert(
-      _el$2,
-      createComponent(For, {
-        get each() {
-          return arr();
-        },
-        children: (item) => [
-          createComponent(ArrayItem, {
-            get children() {
-              return item();
-            }
-          }),
-          _tmpl$3()
-        ]
-      }),
-      null
-    );
-    return _el$2;
+    var _el$ = _tmpl$3();
+    insert(_el$, createComponent(Pulse, {
+      outerStyle: {
+        width: "100%",
+        height: "100%"
+      },
+      innerStyle: {
+        padding: "20px",
+        display: "flex",
+        "flex-direction": "column",
+        "align-items": "center",
+        gap: "14px"
+      },
+      get children() {
+        return [_tmpl$(), (() => {
+          var _el$3 = _tmpl$2();
+          _el$3.firstChild;
+          _el$3.$$click = add;
+          insert(_el$3, count, null);
+          return _el$3;
+        })()];
+      }
+    }));
+    return _el$;
   })();
 };
-delegateEvents(['click']);
-mount(createComponent(Comp2, {}));
+delegateEvents(["click"]);
+mount(createComponent(App, {}));

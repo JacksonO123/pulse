@@ -65,10 +65,7 @@ export const replaceElements = (
     if (Array.isArray(el)) {
       if (target.length === 0) {
         if (after) insertBefore(after as Element, el);
-        else {
-          console.log('here');
-          renderChild(parent, el);
-        }
+        else renderChild(parent, el);
         return;
       }
 

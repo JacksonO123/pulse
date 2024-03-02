@@ -1,12 +1,13 @@
 import { insertAfter, jsxElementToElement, removeElementOrArr, renderChild } from './dom.js';
-import { JSXElement, createEffect } from './index.js';
+import { JSXElement } from './index.js';
 import {
   Accessor,
   Setter,
   cleanupHandler,
   createSignal,
   getSignalInternals,
-  trackScope
+  trackScope,
+  createEffect
 } from '@jacksonotto/signals';
 
 type ForProps<T> = {

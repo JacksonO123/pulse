@@ -1,8 +1,5 @@
-// import App from './App';
-// import App from './Comp';
-// import './style.css';
-import App from './Comp2';
-// import App from './Comp3';
+import App from './App';
 import { mount } from '@jacksonotto/pulse';
+import './index.css';
 
 mount(<App />);

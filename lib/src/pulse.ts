@@ -14,7 +14,7 @@ import { jsxElementToElement, renderChild, eventHandler, replaceElements, insert
 export type JSXElement = JSX.Element;
 export { JSX };
 export { mount } from './dom.js';
-export { derived as memo, createEffect as effect } from '@jacksonotto/signals';
+export { derived as memo } from '@jacksonotto/signals';
 
 const $$EVENTS = '_$DX_DELEGATE';
 
@@ -28,15 +28,24 @@ declare global {
   }
 }
 
+let mountEvents: (() => void)[] = [];
+
 export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
   comp: JSX.Component<T>,
   props: T
 ) => {
+  const startLen = mountEvents.length;
+
   let res: JSXElement;
 
   const cleanup = trackScope(() => {
     res = comp(props);
   });
+
+  while (mountEvents.length > startLen) {
+    const currentEvent = mountEvents.pop();
+    currentEvent?.();
+  }
 
   onCleanup(cleanup);
 
@@ -131,6 +140,17 @@ export const insert = (
       renderChild(parent, accessor);
     }
   }
+};
+
+export const onMount = (cb: () => void) => {
+  mountEvents.push(cb);
+};
+
+export const style = (el: HTMLElement, style: JSX.CSSProperties) => {
+  Object.entries(style).forEach(([key, value]) => {
+    // @ts-ignore
+    el.style[key] = value;
+  });
 };
 
 export const delegateEvents = (events: string[], doc = document) => {
