@@ -1,5 +1,5 @@
 export * from './pulse.js';
 export * from './builtins.js';
-export { createSignal } from '@jacksonotto/signals';
-declare const createEffect: (fn: (noobj: {}) => void) => void;
-export { createEffect as effect };
+export * from '@jacksonotto/signals';
+declare const createEffectJsx: (fn: (noobj: {}) => void) => void;
+export { createEffectJsx as effect };
