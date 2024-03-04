@@ -8,13 +8,13 @@
 .outer::before {
   content: "";
   position: absolute;
-  width: 150%;
+  width: 1000%;
   height: 100%;
-  background: #007bff;
+  background: var(--primary);
   z-index: -1;
   transform-origin: center;
   transform: rotate(45deg);
-  animation: pulseEffect 3s ease-in-out infinite;
+  animation: pulseEffect 6s ease-in-out infinite;
 }
 
 .inner {
@@ -24,9 +24,9 @@
 
 @keyframes pulseEffect {
   from {
-    transform: translate(-200%, 200%) rotate(45deg);
+    transform: translate(-100%, 200%) rotate(45deg);
   }
   to {
-    transform: translate(200%, -200%) rotate(45deg);
+    transform: translate(100%, -200%) rotate(45deg);
   }
 }

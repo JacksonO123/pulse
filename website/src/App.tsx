@@ -30,6 +30,7 @@ const App = () => {
           <a href="https://github.com/JacksonO123/pulse" target="_blank">
             View on Github
           </a>
+          |
           <a
             href="https://www.npmjs.com/package/@jacksonotto/pulse"
             target="_blank"
