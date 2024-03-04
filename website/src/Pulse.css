@@ -10,7 +10,7 @@
   position: absolute;
   width: 1000%;
   height: 100%;
-  background: #007bff;
+  background: var(--primary);
   z-index: -1;
   transform-origin: center;
   transform: rotate(45deg);
