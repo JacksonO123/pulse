@@ -1,4 +1,5 @@
 import { JSXElement } from './pulse.js';
+export declare let mountEvents: (() => void)[];
 export declare const renderChild: (parent: Element, target: JSXElement) => void;
 export declare const mount: (comp: JSXElement, root?: HTMLElement) => void;
 export declare const jsxElementToElement: (jsxEl: JSXElement) => Node | Node[];

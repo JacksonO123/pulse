@@ -9,7 +9,14 @@ import {
   cleanupHandler
 } from '@jacksonotto/signals';
 import type { JSX } from './jsx.js';
-import { jsxElementToElement, renderChild, eventHandler, replaceElements, insertBefore } from './dom.js';
+import {
+  jsxElementToElement,
+  renderChild,
+  eventHandler,
+  replaceElements,
+  insertBefore,
+  mountEvents
+} from './dom.js';
 
 export type JSXElement = JSX.Element;
 export { JSX };
@@ -28,24 +35,15 @@ declare global {
   }
 }
 
-let mountEvents: (() => void)[] = [];
-
 export const createComponent = <T extends JSX.DOMAttributes<JSXElement>>(
   comp: JSX.Component<T>,
   props: T
 ) => {
-  const startLen = mountEvents.length;
-
   let res: JSXElement;
 
   const cleanup = trackScope(() => {
     res = comp(props);
   });
-
-  while (mountEvents.length > startLen) {
-    const currentEvent = mountEvents.pop();
-    currentEvent?.();
-  }
 
   onCleanup(cleanup);
 

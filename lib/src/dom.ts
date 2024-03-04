@@ -2,6 +2,8 @@ import { trackScope } from '@jacksonotto/signals';
 import { JSX } from './jsx.js';
 import { JSXElement } from './pulse.js';
 
+export let mountEvents: (() => void)[] = [];
+
 export const renderChild = (parent: Element, target: JSXElement) => {
   const element = jsxElementToElement(target);
   if (Array.isArray(element)) {
@@ -14,6 +16,9 @@ export const renderChild = (parent: Element, target: JSXElement) => {
 export const mount = (comp: JSXElement, root = document.body) => {
   trackScope(() => {
     renderChild(root, comp);
+
+    mountEvents.forEach((event) => event());
+    mountEvents = [];
   });
 };
 
