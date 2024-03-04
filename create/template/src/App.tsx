@@ -23,7 +23,10 @@ const App = () => {
           gap: "14px",
         }}
       >
-        <h1>Pulse</h1>
+        <div class="title">
+          <img src="/pulse.jpg" alt="Pulse Logo" width="30" height="30" />
+          <h1>Pulse</h1>
+        </div>
         <button onClick={add}>Count {count()}</button>
       </Pulse>
     </div>
