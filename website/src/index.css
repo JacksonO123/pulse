@@ -1,0 +1,22 @@
+:root {
+  --primary: rgb(46, 103, 112);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+a {
+  color: var(--primary);
+}

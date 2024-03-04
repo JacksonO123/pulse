@@ -1,0 +1,32 @@
+.outer {
+  padding: 2px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+}
+
+.outer::before {
+  content: "";
+  position: absolute;
+  width: 1000%;
+  height: 100%;
+  background: #007bff;
+  z-index: -1;
+  transform-origin: center;
+  transform: rotate(45deg);
+  animation: pulseEffect 6s ease-in-out infinite;
+}
+
+.inner {
+  background: white;
+  border-radius: 6px;
+}
+
+@keyframes pulseEffect {
+  from {
+    transform: translate(-100%, 200%) rotate(45deg);
+  }
+  to {
+    transform: translate(100%, -200%) rotate(45deg);
+  }
+}
