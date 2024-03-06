@@ -1,5 +1,5 @@
-import App from './App';
+import Router from './Router';
 import { mount } from '@jacksonotto/pulse';
 import './index.css';
 
-mount(<App />);
+mount(<Router />);

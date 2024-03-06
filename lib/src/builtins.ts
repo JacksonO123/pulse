@@ -1,5 +1,12 @@
-import { insertAfter, jsxElementToElement, removeElementOrArr, renderChild } from './dom.js';
-import { JSXElement } from './index.js';
+import {
+  getParent,
+  insertAfter,
+  jsxElementToElement,
+  removeElementOrArr,
+  renderChild,
+  replaceElements
+} from './dom.js';
+import { JSX, JSXElement } from './index.js';
 import {
   Accessor,
   Setter,
@@ -89,4 +96,79 @@ export const For = <T extends JSXElement>(props: ForProps<T>) => {
 
   if (info.length === 0) return hookEl;
   return info.map((item) => item[2]);
+};
+
+const page404 = () => {
+  const el = document.createElement('div');
+  el.textContent = '404 page not found';
+  return el;
+};
+
+export type Route = {
+  path: string;
+  element: () => JSXElement;
+};
+
+type RouterProps = {
+  routes: Route[];
+};
+
+const [currentPath, setCurrentPath] = createSignal('/');
+
+export const PulseRouter = (props: RouterProps) => {
+  const pathname = location.pathname;
+  let prevEl: Node | Node[] | null = null;
+
+  setCurrentPath(pathname);
+
+  window.addEventListener('popstate', (e) => {
+    const newPath = (e.currentTarget as typeof window).location.pathname;
+    setCurrentPath(newPath);
+  });
+
+  const [prevCleanup, setCleanup] = cleanupHandler();
+
+  createEffect(() => {
+    prevCleanup();
+
+    for (let i = 0; i < props.routes.length; i++) {
+      if (props.routes[i].path === currentPath()) {
+        const cleanup = trackScope(() => {
+          const newEl = jsxElementToElement(props.routes[i].element());
+          if (prevEl !== null) {
+            const parent = getParent(prevEl);
+            if (parent === null) return;
+            replaceElements(prevEl, newEl, parent as Element, null);
+          }
+          prevEl = newEl;
+        });
+
+        setCleanup(cleanup);
+
+        break;
+      }
+    }
+  });
+
+  if (prevEl) return prevEl;
+  return page404();
+};
+
+export const redirect = (to: string) => {
+  setCurrentPath(to);
+  window.history.pushState({}, '', to);
+};
+
+export const Link = (props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  const link = document.createElement('a');
+
+  Object.entries(props).map(([key, value]) => link.setAttribute(key, value));
+  if (props.children !== undefined) renderChild(link, props.children);
+
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (props.href) setCurrentPath(props.href);
+  });
+
+  return link;
 };

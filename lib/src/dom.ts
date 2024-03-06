@@ -52,6 +52,12 @@ export const insertBefore = (target: Element, el: JSXElement) => {
   }
 };
 
+export const getParent = (target: Node | Node[] | undefined): Node | null => {
+  if (!target) return null;
+  if (Array.isArray(target)) return getParent(target[0]);
+  return target.parentNode;
+};
+
 export const replaceElements = (
   target: Node | Node[],
   el: Node | Node[],
