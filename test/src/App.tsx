@@ -1,24 +1,28 @@
-import { Link, createSignal, redirect } from '@jacksonotto/pulse';
-import Arr from './Arr';
+import { TEvent, createEffect, createSignal } from '@jacksonotto/pulse';
 
 const App = () => {
-  const [arr, setArr] = createSignal([0]);
+  const [value, setValue] = createSignal('');
 
-  const add = () => {
-    setArr((prev) => [...prev, prev[prev.length - 1] + 1]);
+  const update = (e: TEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setValue(value);
   };
 
-  setTimeout(() => {
-    redirect('/testing');
-  }, 1000);
+  const double = () => {
+    setValue((prev) => prev + prev);
+  };
+
+  createEffect(() => {
+    console.log(value());
+  });
 
   return (
     <div class="root">
-      <button onClick={add}>Add</button>
-      <br />
-      <Arr arr={arr()} />
-      <input />
-      <Link href="/testing">thing</Link>
+      <button onClick={double}>Double</button>
+      <input
+        value={value()}
+        onInput={update}
+      />
     </div>
   );
 };

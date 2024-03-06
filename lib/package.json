@@ -5,7 +5,7 @@
   "types": "./types/index.d.ts",
   "description": "A lightweight JavaScript framework based on signals",
   "author": "Jackson Otto",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "exports": {
     ".": {
       "import": "./dist/index.js",
