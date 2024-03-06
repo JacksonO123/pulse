@@ -76,15 +76,15 @@ export const insert = (
 
   if (typeof accessor === 'function') {
     let prevEl: Node | Node[] | null = null;
-    const [prevCleanup, addCleanup] = cleanupHandler();
     let context: Context | null = null;
     let computed = false;
 
+    const [prevCleanup, addCleanup] = cleanupHandler();
+
     createEffect(() => {
       if (!context) {
-        const current = currentContext();
-        if (!current) return;
-        context = current;
+        context = currentContext() || null;
+        if (!context) return;
       }
 
       prevCleanup();
@@ -112,14 +112,9 @@ export const insert = (
         const el = jsxElementToElement(value);
 
         if (prevEl === null) {
-          if (marker !== null) {
-            insertBefore(marker as Element, el);
-          } else {
-            renderChild(parent, el);
-          }
-        } else {
-          replaceElements(prevEl, el, parent, marker);
-        }
+          if (marker !== null) insertBefore(marker as Element, el);
+          else renderChild(parent, el);
+        } else replaceElements(prevEl, el, parent, marker);
 
         prevEl = el;
       }, false);
@@ -132,11 +127,8 @@ export const insert = (
       addCleanup(cleanup);
     });
   } else {
-    if (marker) {
-      insertBefore(marker as Element, accessor);
-    } else {
-      renderChild(parent, accessor);
-    }
+    if (marker) insertBefore(marker as Element, accessor);
+    else renderChild(parent, accessor);
   }
 };
 

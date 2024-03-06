@@ -1,17 +1,6 @@
-:root {
-  --primary: #007bff;
-}
-
 * {
   padding: 0;
   margin: 0;
   font-family: sans-serif;
   box-sizing: border-box;
-}
-
-body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

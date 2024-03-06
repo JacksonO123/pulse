@@ -36,11 +36,7 @@ export const insertAfter = (target: Element, el: JSXElement) => {
   const element = jsxElementToElement(el);
 
   if (Array.isArray(element)) {
-    let prev: Node = target;
-    element.forEach((item) => {
-      (prev as Element).after(item);
-      prev = item;
-    });
+    target.after(...element);
   } else {
     target.after(element);
   }
@@ -50,11 +46,7 @@ export const insertBefore = (target: Element, el: JSXElement) => {
   const element = jsxElementToElement(el);
 
   if (Array.isArray(element)) {
-    let prev: Node = target;
-    element.reverse().forEach((item) => {
-      (prev as Element).before(item);
-      prev = item;
-    });
+    target.before(...element.reverse());
   } else {
     target.before(element);
   }
@@ -67,13 +59,13 @@ export const replaceElements = (
   after: Node | null
 ) => {
   if (Array.isArray(target)) {
-    if (Array.isArray(el)) {
-      if (target.length === 0) {
-        if (after) insertBefore(after as Element, el);
-        else renderChild(parent, el);
-        return;
-      }
+    if (target.length === 0) {
+      if (after) insertBefore(after as Element, el);
+      else renderChild(parent, el);
+      return;
+    }
 
+    if (Array.isArray(el)) {
       while (target.length > el.length) {
         (target[target.length - 1] as Element).remove();
         target.pop();
@@ -89,12 +81,6 @@ export const replaceElements = (
         i++;
       }
     } else {
-      if (target.length === 0) {
-        if (after) insertBefore(after as Element, el);
-        else renderChild(parent, el);
-        return;
-      }
-
       while (target.length > 1) {
         (target[target.length - 1] as Element).remove();
         target.pop();

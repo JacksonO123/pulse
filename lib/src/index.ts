@@ -4,7 +4,7 @@ export * from '@jacksonotto/signals';
 
 import { createEffect as signalEffect } from '@jacksonotto/signals';
 
-const createEffectJsx = (fn: (noobj: {}) => void) => {
+const createEffectJsx = (fn: (_: {}) => void) => {
   const cb = () => fn({});
 
   signalEffect(cb);
