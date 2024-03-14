@@ -144,8 +144,17 @@ export const style = (el: HTMLElement, style: JSX.CSSProperties) => {
 };
 
 export const className = (el: Element, classStr: string) => {
-  const classes = classStr.split(' ');
-  classes.forEach((item) => el.classList.add(item));
+  const classes = new Set(classStr.split(' '));
+
+  el.classList.forEach((item) => {
+    if (!classes.has(item)) el.classList.remove(item);
+  });
+
+  classes.forEach((item) => {
+    if (item.length > 0 && !el.classList.contains(item)) {
+      el.classList.add(item);
+    }
+  });
 };
 
 export const delegateEvents = (events: string[], doc = document) => {
