@@ -1,4 +1,4 @@
-import { type Accessor } from '@jacksonotto/signals';
+import { type Accessor, Setter } from '@jacksonotto/signals';
 import type { JSX } from './jsx.js';
 export type JSXElement = JSX.Element;
 export { JSX };
@@ -19,3 +19,4 @@ export declare const onMount: (cb: () => void) => void;
 export declare const style: (el: HTMLElement, style: JSX.CSSProperties) => void;
 export declare const className: (el: Element, classStr: string) => void;
 export declare const delegateEvents: (events: string[], doc?: Document) => void;
+export declare const use: (elFn: Setter<Node>, ref: Node) => void;

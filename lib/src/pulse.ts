@@ -6,7 +6,8 @@ import {
   currentContext,
   State,
   Context,
-  cleanupHandler
+  cleanupHandler,
+  Setter
 } from '@jacksonotto/signals';
 import type { JSX } from './jsx.js';
 import {
@@ -166,4 +167,8 @@ export const delegateEvents = (events: string[], doc = document) => {
       doc.addEventListener(name, eventHandler);
     }
   }
+};
+
+export const use = (elFn: Setter<Node>, ref: Node) => {
+  elFn(ref);
 };
