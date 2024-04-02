@@ -1,7 +1,7 @@
 {
   "name": "create-pulse-app",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Templating cli @jacksonotto/pulse",
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
