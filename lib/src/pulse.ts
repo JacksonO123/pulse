@@ -22,9 +22,32 @@ import {
 export type JSXElement = JSX.Element;
 export { JSX };
 export { mount } from './dom.js';
-export { derived as memo } from '@jacksonotto/signals';
 
 const $$EVENTS = '_$DX_DELEGATE';
+const DelegatedEvents = new Set([
+  'beforeinput',
+  'click',
+  'dblclick',
+  'contextmenu',
+  'focusin',
+  'focusout',
+  'input',
+  'keydown',
+  'keyup',
+  'mousedown',
+  'mousemove',
+  'mouseout',
+  'mouseover',
+  'mouseup',
+  'pointerdown',
+  'pointermove',
+  'pointerout',
+  'pointerover',
+  'pointerup',
+  'touchend',
+  'touchmove',
+  'touchstart'
+]);
 
 declare global {
   interface Document {
@@ -137,7 +160,7 @@ export const onMount = (cb: () => void) => {
   mountEvents.push(cb);
 };
 
-export const style = (el: HTMLElement, style: JSX.CSSProperties) => {
+export const style = (el: Element, style: JSX.CSSProperties) => {
   Object.entries(style).forEach(([key, value]) => {
     // @ts-ignore
     el.style[key] = value;
@@ -171,4 +194,164 @@ export const delegateEvents = (events: string[], doc = document) => {
 
 export const use = (elFn: Setter<Node>, ref: Node) => {
   elFn(ref);
+};
+
+type SplitPropsReturn<T extends Record<string, any>, K extends readonly (keyof T)[]> = readonly [
+  Pick<T, K[number]>,
+  Omit<T, K[number]>
+];
+
+export const splitProps = <T extends Record<string, any>, K extends readonly (keyof T)[]>(
+  props: T,
+  split: K
+): SplitPropsReturn<T, K> => {
+  const splitKeys = new Set(split);
+  const newProps = {};
+  const splitProps = {};
+
+  const keys = Object.getOwnPropertyNames(props);
+
+  for (let i = 0; i < keys.length; i++) {
+    const desc = Object.getOwnPropertyDescriptor(props, keys[i])!;
+    const defaultDesc = !desc?.get && !desc?.set && desc?.enumerable && desc?.writable && desc?.configurable;
+
+    if (splitKeys.has(keys[i])) {
+      if (defaultDesc) {
+        // @ts-ignore
+        splitProps[keys[i]] = desc.value;
+      } else {
+        Object.defineProperty(splitProps, keys[i], desc);
+      }
+    } else {
+      if (defaultDesc) {
+        // @ts-ignore
+        newProps[keys[i]] = desc.value;
+      } else {
+        Object.defineProperty(newProps, keys[i], desc);
+      }
+    }
+  }
+
+  return [splitProps, newProps] as unknown as SplitPropsReturn<T, K>;
+};
+
+const applyProps = <T extends Record<string, any>, K extends Record<string, any>>(outObj: T, obj: K) => {
+  const keys = Object.getOwnPropertyNames(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const desc = Object.getOwnPropertyDescriptor(obj, keys[i])!;
+    if (!desc) continue;
+    Object.defineProperty(outObj, keys[i], desc);
+  }
+
+  return outObj as T & K;
+};
+
+export const mergeProps = <T extends Record<string, any>, K extends Record<string, any>>(
+  newProps: T,
+  props: K
+) => {
+  const res = {};
+
+  applyProps(res, newProps);
+  applyProps(res, props);
+
+  return res as T & K;
+};
+
+export const addEventListener = (
+  el: Element,
+  eventType: string,
+  fn: EventListenerOrEventListenerObject,
+  delegate: boolean
+) => {
+  if (delegate) {
+    if (Array.isArray(fn)) {
+      // @ts-ignore
+      el[`$$${eventType}`] = fn[0];
+      // @ts-ignore
+      el[`$$${eventType}Data`] = fn[1];
+      // @ts-ignore
+    } else {
+      // @ts-ignore
+      el[`$$${eventType}`] = fn;
+    }
+  } else if (Array.isArray(fn)) {
+    const handler = fn[0];
+    const listener = (e: Event) => handler(el, fn[1], e);
+    fn[0] = listener;
+    el.addEventListener(eventType, listener);
+  } else {
+    el.addEventListener(eventType, fn);
+  }
+};
+
+export const spread = (
+  el: Element,
+  props: JSX.DOMAttributes<Element>,
+  _isSVG = false,
+  skipChildren = false
+) => {
+  const prevProps: {
+    children?: JSXElement | JSXElement[];
+  } = {
+    children: undefined
+  };
+  if (!skipChildren && props.children) {
+    createEffect(() => {
+      el.textContent = '';
+      renderChild(el, props.children);
+      prevProps.children = props.children;
+    });
+  }
+  createEffect(() => typeof props.ref === 'function' && props.ref(el));
+  createEffect(() => assign(el, props, prevProps, true));
+  return prevProps;
+};
+
+export const assign = (el: Element, props: any, prevProps: any, skipRef = false) => {
+  for (const prop in prevProps) {
+    if (!(prop in prevProps)) {
+      assignProp(el, prop, null, prevProps[prop]);
+      delete prevProps[prop];
+    }
+  }
+
+  for (const prop in props) {
+    const value = props[prop as keyof typeof props];
+    prevProps[prop] = assignProp(el, prop, value, prevProps[prop], skipRef);
+  }
+};
+
+const assignProp = (el: Element, prop: string, value: any, prev: any, skipRef = false) => {
+  if (value === null) {
+    el.removeAttribute(prop);
+    return null;
+  }
+
+  if (prop === 'style') return style(el, value);
+  if (prop === 'classList') return className(el, value);
+  if (value === prev) return prev;
+  if (prop === 'ref') if (!skipRef) return value(el);
+  if (prop.slice(0, 2) === 'on') {
+    const name = prop.slice(2).toLowerCase();
+    const delegate = DelegatedEvents.has(name);
+    if (!delegate && prev) {
+      const listener = Array.isArray(prev) ? prev[0] : prev;
+      el.removeEventListener(name, listener);
+    }
+    if (delegate || value) {
+      addEventListener(el, name, value, delegate);
+      delegate && delegateEvents([name]);
+    }
+    return;
+  }
+
+  if (prop === 'value') {
+    // @ts-ignore
+    el.value = value;
+    return value;
+  }
+
+  el.setAttribute(prop, value);
+  return value;
 };

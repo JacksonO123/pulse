@@ -13,18 +13,19 @@ export const renderChild = (parent: Element, target: JSXElement) => {
   }
 };
 
-export const mount = (comp: JSXElement, root = document.body) => {
+export const mount = (comp: () => JSXElement, root = document.body) => {
   trackScope(() => {
-    renderChild(root, comp);
+    renderChild(root, comp());
 
     mountEvents.forEach((event) => event());
     mountEvents = [];
   });
 };
 
-export const jsxElementToElement = (jsxEl: JSXElement): Node | Node[] => {
+export const jsxElementToElement = (jsxEl: JSXElement | (() => JSXElement)): Node | Node[] => {
   if (jsxEl instanceof Node) return jsxEl as Element;
 
+  if (typeof jsxEl === 'function') return jsxElementToElement(jsxEl());
   if (Array.isArray(jsxEl)) {
     return jsxEl.map((el) => jsxElementToElement(el)).flat();
   }

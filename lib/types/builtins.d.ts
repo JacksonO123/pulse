@@ -4,7 +4,7 @@ type ForProps<T> = {
     each: T[];
     children: (item: Accessor<T>, index: number) => JSXElement;
 };
-export declare const For: <T extends JSX.Element>(props: ForProps<T>) => Text | (Node | Node[])[];
+export declare const For: <T extends JSXElement>(props: ForProps<T>) => Text | (Node | Node[])[];
 export type Route = {
     path: string;
     element: () => JSXElement;

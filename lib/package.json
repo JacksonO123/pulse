@@ -5,7 +5,7 @@
   "types": "./types/index.d.ts",
   "description": "A lightweight JavaScript framework based on signals",
   "author": "Jackson Otto",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -29,7 +29,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@jacksonotto/signals": "^1.3.2",
     "csstype": "^3.1.3"
   },
   "repository": {
@@ -48,5 +47,8 @@
     "performance",
     "pulse",
     "pulsejs"
-  ]
+  ],
+  "peerDependencies": {
+    "@jacksonotto/signals": "link:../../signals"
+  }
 }
